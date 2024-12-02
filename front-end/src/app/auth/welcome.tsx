@@ -14,7 +14,10 @@ export default function Welcome() {
     }, 800);
   };
   return (
-    <WavyBackground className="max-w-4xl mx-auto">
+    <WavyBackground
+      className="max-w-4xl mx-auto"
+      colors={["#6528F7", "#A076F9", "#D7BBF5", "#EDE4FF"]}
+    >
       <motion.h1
         initial={{ opacity: 0.5, y: 100 }}
         animate={animateOut ? { opacity: 0, y: -50 } : { opacity: 1, y: 0 }}
