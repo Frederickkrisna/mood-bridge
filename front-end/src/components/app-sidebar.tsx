@@ -1,107 +1,80 @@
 import {
-  Calendar,
-  ChevronUp,
-  Home,
-  Inbox,
-  Search,
-  Settings,
-  User2,
-} from "lucide-react";
-
-import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
-  SidebarGroupContent,
   SidebarGroupLabel,
+  SidebarHeader,
   SidebarMenu,
-  SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuButton,
 } from "@/components/ui/sidebar";
+import { AuthContext } from "@/context/AuthContext";
+import { auth } from "@/lib/firebase";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
-
-// Menu items.
-const items = [
-  {
-    title: "Home",
-    url: "#",
-    icon: Home,
-  },
-  {
-    title: "Inbox",
-    url: "#",
-    icon: Inbox,
-  },
-  {
-    title: "Calendar",
-    url: "#",
-    icon: Calendar,
-  },
-  {
-    title: "Search",
-    url: "#",
-    icon: Search,
-  },
-  {
-    title: "Settings",
-    url: "#",
-    icon: Settings,
-  },
-];
+} from "@radix-ui/react-dropdown-menu";
+import { ChevronUp, User2 } from "lucide-react";
+import { useContext } from "react";
+import { useNavigate } from "react-router-dom";
 
 export function AppSidebar() {
+  const navigate = useNavigate();
+  const { userData } = useContext(AuthContext);
+  const handleSignOut = () => {
+    auth
+      .signOut()
+      .then(() => {
+        navigate("/");
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
   return (
     <Sidebar>
-      <SidebarContent className="flex flex-col h-full ml-16">
-        <SidebarGroup>
-          <SidebarGroupLabel className="mb-4 text-3xl">
-            Moodbridge
-          </SidebarGroupLabel>
-          <SidebarGroupContent className="flex-1">
-            <SidebarMenu>
-              {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <a href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </a>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-              <SidebarMenuItem>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <SidebarMenuButton>
-                      <User2 /> Username
-                      <ChevronUp className="ml-auto" />
-                    </SidebarMenuButton>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent
-                    side="top"
-                    className="w-[--radix-popper-anchor-width]"
-                  >
-                    <DropdownMenuItem>
-                      <span>Account</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <span>Billing</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <span>Sign out</span>
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+      <SidebarHeader />
+      <SidebarGroupLabel>
+        <div className="text-3xl">Mood Bridge</div>
+      </SidebarGroupLabel>
+      <SidebarContent>
+        <SidebarGroup />
+        <SidebarGroup />
       </SidebarContent>
+      <SidebarFooter>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <SidebarMenuButton>
+                  <User2 /> {userData.first_name}, {userData.last_name}
+                  <ChevronUp className="ml-auto" />
+                </SidebarMenuButton>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                side="top"
+                className="w-[--radix-popper-anchor-width] space-y-1"
+              >
+                <DropdownMenuItem>
+                  <button
+                    onClick={() => {
+                      navigate("/dashboard/account");
+                    }}
+                  >
+                    Account
+                  </button>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <button onClick={handleSignOut}>Sign out</button>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
     </Sidebar>
   );
 }
