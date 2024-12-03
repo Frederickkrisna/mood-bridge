@@ -1,31 +1,81 @@
-import { WavyBackground } from "@/components/ui/wavy-background";
-
+import { AuthContext } from "@/context/AuthContext";
+import { UserDataInterface } from "@/interfaces/interface";
+import { auth, db } from "@/lib/firebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
 import { motion } from "framer-motion";
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Register from "./register";
 
 export default function Login() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { setUserData } = useContext(AuthContext);
+  const [animateOut, setAnimateOut] = useState(false);
+  const [isActive, setIsActive] = useState({
+    login: true,
+    register: false,
+  });
 
+  const renderRegister = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setAnimateOut(true);
+    setTimeout(() => {
+      setIsActive({ login: false, register: true });
+      setAnimateOut(false);
+    }, 1600);
+  };
+
+  const getUser = async () => {
+    try {
+      const docRef = doc(db, "MsUser", email);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        return docSnap.data() as UserDataInterface;
+      } else {
+        console.log("Data not found");
+        return null;
+      }
+    } catch (e) {
+      console.error("Error getting document:", e);
+      return null;
+    }
+  };
+  const signIn = async () => {
+    if (!email || !password) {
+      return alert("Please fill all the fields");
+    }
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      const userData: UserDataInterface | null = await getUser();
+      if (userData) {
+        setUserData(userData);
+        navigate("/dashboard/home");
+      } else {
+        alert("User Data Not Found");
+      }
+    } catch (e) {
+      alert("Invalid email or password");
+      console.error(e);
+    }
+  };
   return (
-    <WavyBackground
-      className="max-w-4xl mx-auto"
-      colors={["#B6FFFA", "#98E4FF", "#80B3FF", "#687EFF"]}
+    <motion.div
+      initial={{ opacity: 0, y: 100 }}
+      animate={animateOut ? { opacity: 0, y: -50 } : { opacity: 1, y: 0 }}
+      transition={{
+        delay: 0.3,
+        duration: 0.8,
+        ease: "easeInOut",
+      }}
+      className="flex items-center text-center justify-center"
     >
-      <motion.div
-        initial={{ opacity: 0.5, y: 100 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{
-          delay: 0.3,
-          duration: 0.8,
-          ease: "easeInOut",
-        }}
-        className="flex items-center text-center justify-center"
-      >
+      {isActive.login && (
         <div className="w-screen h-screen flex justify-center items-center">
-          <form className="form-content p-5 min-w-[40vh] rounded-lg border-r-boxShadow-input bg-gradient-to-tr from-violet-400 to-violet-600">
-            <div className="font-semibold text-xl pb-5 w-full text-center text-background">
+          <form className="form-content p-5 min-w-[40vh] rounded-lg border-r-boxShadow-input backdrop-blur-2xl border border-slate-700">
+            <div className="font-semibold text-3xl pb-5 w-full text-center text-background">
               Sign In
             </div>
             <div className="form-group pb-5 w-full">
@@ -38,12 +88,12 @@ export default function Login() {
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
-            <div className="form-group pb-5 min-w-[20rem]">
+            <div className="form-group pb-5 w-full">
               <input
                 type="password"
                 id="formPassword"
                 placeholder="password"
-                className="p-2 rounded-xl bg-bluefield text-black w-full"
+                className="p-2 rounded-lg bg-bluefield text-black w-full"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
@@ -53,21 +103,37 @@ export default function Login() {
                 <div className="pr-2 text-sm text-background">
                   Dont have an account?
                 </div>
-                <Link to="/register" className="text-white text-sm underline">
+                <button
+                  onClick={renderRegister}
+                  className="text-white text-sm underline"
+                >
                   Register here
-                </Link>
+                </button>
               </div>
               <button
-                onClick={() => console.log("Login")}
+                onClick={signIn}
                 type="button"
-                className=" rounded-xl bg-slate-800 text-background font-semibold min-w-[20rem] w-full p-2 hover:bg-background hover:text-black items-center justify-center"
+                className=" rounded-xl bg-slate-800 text-background font-semibold min-w-[20rem] w-full p-2 hover:bg-black hover:text-slate-50 items-center justify-center"
               >
                 Login
               </button>
             </div>
           </form>
         </div>
-      </motion.div>
-    </WavyBackground>
+      )}
+      {isActive.register && (
+        <motion.div
+          initial={{ opacity: 0, y: 100 }}
+          animate={animateOut ? { opacity: 0, y: -50 } : { opacity: 1, y: 0 }}
+          transition={{
+            delay: 0.3,
+            duration: 0.8,
+            ease: "easeInOut",
+          }}
+        >
+          <Register />
+        </motion.div>
+      )}
+    </motion.div>
   );
 }
