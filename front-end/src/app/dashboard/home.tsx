@@ -60,19 +60,21 @@ export default function Home() {
   }, [userData, navigate]);
   return (
     <Layout>
-      <BentoGrid className="max-w-8xl mx-auto ml-5 mt-5 my-10">
-        {items.map((item, i) => (
-          <BentoGridItem
-            key={i}
-            title={item.title}
-            description={item.description}
-            header={item.header}
-            icon={item.icon}
-            className={i === 3 || i === 6 ? "md:col-span-2" : ""}
-            onClick={() => console.log("clicked")}
-          />
-        ))}
-      </BentoGrid>
+      <div className="scroll-container max-w-8xl mx-auto ml-5 mt-5 my-10 ">
+        <BentoGrid className="overflow-y-hidden">
+          {items.map((item, i) => (
+            <BentoGridItem
+              key={i}
+              title={item.title}
+              description={item.description}
+              header={item.header}
+              icon={item.icon}
+              className={i === 3 || i === 6 ? "md:col-span-2" : ""}
+              onClick={() => console.log("clicked")}
+            />
+          ))}
+        </BentoGrid>
+      </div>
     </Layout>
   );
 }
