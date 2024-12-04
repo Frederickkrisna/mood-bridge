@@ -75,12 +75,12 @@ export default function Register() {
         duration: 0.8,
         ease: "easeInOut",
       }}
-      className="flex items-center text-center justify-center"
+      className="flex items-center text-center justify-center text-white"
     >
       {isActive.register && (
         <div className="w-screen h-screen flex justify-center items-center">
           <form className="form-content p-5 min-w-[50vh] rounded-lg border-r-boxShadow-input backdrop-blur-2xl border border-slate-700">
-            <div className="font-semibold text-3xl pb-5 w-full text-center text-background">
+            <div className="font-semibold text-3xl pb-5 w-full text-center text-background text-white">
               Register
             </div>
             <div className="form-group pb-5 w-full flex flex-row space-x-4">
@@ -133,7 +133,7 @@ export default function Register() {
             </div>
             <div>
               <div className="flex pt-1 mb-1">
-                <div className="pr-2 text-sm text-background">
+                <div className="pr-2 text-sm text-background text-white">
                   Already have an account?
                 </div>
                 <button
@@ -146,7 +146,7 @@ export default function Register() {
               <button
                 onClick={handleRegister}
                 type="button"
-                className=" rounded-xl bg-slate-800 text-background font-semibold min-w-[20rem] w-full p-2 hover:bg-black hover:text-slate-50 items-center justify-center"
+                className=" rounded-xl bg-slate-800 text-white font-semibold min-w-[20rem] w-full p-2 hover:text-slate-50 items-center justify-center"
               >
                 Sign up
               </button>

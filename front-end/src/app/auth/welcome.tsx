@@ -11,6 +11,7 @@ export default function Welcome() {
     second: false,
     third: false,
   });
+
   const onGetStarted = () => {
     setAnimateOut(true);
     setTimeout(() => {
@@ -60,7 +61,7 @@ export default function Welcome() {
             className="flex items-center text-center justify-center"
           >
             <Button
-              className=" min-w-96 md:text-2xl py-5  bg-slate-800 mt-4"
+              className=" min-w-96 md:text-2xl py-5  bg-slate-800 mt-4 text-white"
               onClick={onGetStarted}
             >
               Get Started

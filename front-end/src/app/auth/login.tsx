@@ -73,9 +73,9 @@ export default function Login() {
       className="flex items-center text-center justify-center"
     >
       {isActive.login && (
-        <div className="w-screen h-screen flex justify-center items-center">
+        <div className="w-screen h-screen flex justify-center items-center text-white">
           <form className="form-content p-5 min-w-[40vh] rounded-lg border-r-boxShadow-input backdrop-blur-2xl border border-slate-700">
-            <div className="font-semibold text-3xl pb-5 w-full text-center text-background">
+            <div className="font-semibold text-3xl pb-5 w-full text-center text-white">
               Sign In
             </div>
             <div className="form-group pb-5 w-full">
@@ -100,7 +100,7 @@ export default function Login() {
             </div>
             <div>
               <div className="flex pt-1 mb-1">
-                <div className="pr-2 text-sm text-background">
+                <div className="pr-2 text-sm text-white">
                   Dont have an account?
                 </div>
                 <button
@@ -113,7 +113,7 @@ export default function Login() {
               <button
                 onClick={signIn}
                 type="button"
-                className=" rounded-xl bg-slate-800 text-background font-semibold min-w-[20rem] w-full p-2 hover:bg-black hover:text-slate-50 items-center justify-center"
+                className=" rounded-xl bg-slate-800 text-white font-semibold min-w-[20rem] w-full p-2  hover:text-slate-50 items-center justify-center"
               >
                 Login
               </button>
