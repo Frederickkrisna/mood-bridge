@@ -31,7 +31,7 @@ export const BentoGridItem = ({
   description?: string | React.ReactNode;
   header?: React.ReactNode;
   icon?: React.ReactNode;
-  onClick?: (e: React.MouseEvent) => void;
+  onClick?: () => void;
 }) => {
   return (
     <button

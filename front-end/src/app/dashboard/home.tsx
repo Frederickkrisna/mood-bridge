@@ -1,3 +1,4 @@
+import { AuthContext } from "@/context/AuthContext";
 import Layout from "../layout";
 import { BentoGrid, BentoGridItem } from "@/components/ui/bento-grid";
 import {
@@ -7,6 +8,8 @@ import {
   IconSignature,
   IconTableColumn,
 } from "@tabler/icons-react";
+import { useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Skeleton = () => (
   <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-neutral-200 dark:from-neutral-900 dark:to-neutral-800 to-neutral-100"></div>
@@ -47,6 +50,14 @@ const items = [
 ];
 
 export default function Home() {
+  const { userData } = useContext(AuthContext);
+  const navigate = useNavigate();
+  useEffect(() => {
+    console.log(userData)
+    if(userData.first_name === ''){
+      navigate('/')
+    }
+  }, [userData, navigate])
   return (
     <Layout>
       <BentoGrid className="max-w-8xl mx-auto ml-5">
@@ -58,7 +69,7 @@ export default function Home() {
           header={item.header}
           icon={item.icon}
           className={i === 3 || i === 6 ? "md:col-span-2" : ""}
-          onClick={() => {console.log("clicked")}}
+          onClick={() => console.log("clicked")}
         />
       ))}
     </BentoGrid>
