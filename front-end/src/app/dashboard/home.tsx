@@ -60,7 +60,7 @@ export default function Home() {
   }, [userData, navigate]);
   return (
     <Layout>
-      <BentoGrid className="max-w-8xl mx-auto ml-5">
+      <BentoGrid className="max-w-8xl mx-auto ml-5 mt-5 my-10">
         {items.map((item, i) => (
           <BentoGridItem
             key={i}

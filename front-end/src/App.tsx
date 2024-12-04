@@ -8,14 +8,14 @@ import { ThemeProvider } from "@/components/theme-provider";
 function App() {
   return (
     <ThemeProvider>
-    <Router basename="mood-bridge">
-      <Routes>
-        <Route path="/" element={<Welcome />} />
-        <Route path="/auth/login" element={<Login />} />
-        <Route path="/auth/register" element={<Register />} />
-        <Route path="/dashboard/home" element={<Home />} />
-      </Routes>
-    </Router>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Welcome />} />
+          <Route path="/auth/login" element={<Login />} />
+          <Route path="/auth/register" element={<Register />} />
+          <Route path="/dashboard/home" element={<Home />} />
+        </Routes>
+      </Router>
     </ThemeProvider>
   );
 }
