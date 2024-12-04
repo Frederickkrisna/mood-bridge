@@ -17,33 +17,33 @@ const Skeleton = () => (
 
 const items = [
   {
-    title: "The Dawn of Innovation",
-    description: "Explore the birth of groundbreaking ideas and inventions.",
+    title: "Sentiment Analysis",
+    description: "Analyze your feelings and emotions with AI technology.",
     header: <Skeleton />,
     icon: <IconClipboardCopy className="h-4 w-4 text-neutral-500" />,
   },
   {
-    title: "The Digital Revolution",
-    description: "Dive into the transformative power of technology.",
+    title: "Mood Tracker",
+    description: "Take a look back how's your mood progressions.",
     header: <Skeleton />,
     icon: <IconFileBroken className="h-4 w-4 text-neutral-500" />,
   },
   {
-    title: "The Art of Design",
-    description: "Discover the beauty of thoughtful and functional design.",
+    title: "Journaling and Reflections",
+    description: "Write down your thoughts and reflections.",
     header: <Skeleton />,
     icon: <IconSignature className="h-4 w-4 text-neutral-500" />,
   },
   {
-    title: "The Power of Communication",
+    title: "Chat with fellow sufferers",
     description:
-      "Understand the impact of effective communication in our lives.",
+      "Understand that you are not alone in this journey. Chat with others.",
     header: <Skeleton />,
     icon: <IconTableColumn className="h-4 w-4 text-neutral-500" />,
   },
   {
-    title: "The Pursuit of Knowledge",
-    description: "Join the quest for understanding and enlightenment.",
+    title: "24/7 Support",
+    description: "Get help from our team of experts.",
     header: <Skeleton />,
     icon: <IconArrowWaveRightUp className="h-4 w-4 text-neutral-500" />,
   },
@@ -53,26 +53,26 @@ export default function Home() {
   const { userData } = useContext(AuthContext);
   const navigate = useNavigate();
   useEffect(() => {
-    console.log(userData)
-    if(userData.first_name === ''){
-      navigate('/')
+    console.log(userData);
+    if (userData.first_name === "") {
+      navigate("/");
     }
-  }, [userData, navigate])
+  }, [userData, navigate]);
   return (
     <Layout>
       <BentoGrid className="max-w-8xl mx-auto ml-5">
-      {items.map((item, i) => (
-        <BentoGridItem
-          key={i}
-          title={item.title}
-          description={item.description}
-          header={item.header}
-          icon={item.icon}
-          className={i === 3 || i === 6 ? "md:col-span-2" : ""}
-          onClick={() => console.log("clicked")}
-        />
-      ))}
-    </BentoGrid>
+        {items.map((item, i) => (
+          <BentoGridItem
+            key={i}
+            title={item.title}
+            description={item.description}
+            header={item.header}
+            icon={item.icon}
+            className={i === 3 || i === 6 ? "md:col-span-2" : ""}
+            onClick={() => console.log("clicked")}
+          />
+        ))}
+      </BentoGrid>
     </Layout>
   );
 }
