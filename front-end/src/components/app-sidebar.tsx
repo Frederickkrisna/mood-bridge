@@ -85,12 +85,12 @@ export function AppSidebar() {
             <SidebarMenu>
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild className="my-2">
+                  <SidebarMenuButton asChild className="my-1">
                     <Link to={item.url}>
                       <div className="flex align-center">
                         <item.icon />
                       </div>
-                      <text className="flex align-center font-semibold text-lg pb-1 ml-8">
+                      <text className="flex align-center font-semibold text-sm pb-1 ml-8">
                         {item.title}
                       </text>
                     </Link>
@@ -114,17 +114,17 @@ export function AppSidebar() {
                   side="top"
                   className="w-[--radix-popper-anchor-width] space-y-1 mb-3"
                 >
-                  <DropdownMenuItem>
+                  <DropdownMenuItem className="mx-0.5 hover:bg-gray-100 rounded-md p-1">
                     <button
                       onClick={() => {
                         navigate("/dashboard/account");
-                      }}
+                      }} className="mx-3 text-sm"
                     >
                       Account
                     </button>
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <button onClick={handleSignOut}>Sign out</button>
+                  <DropdownMenuItem className="mx-0.5 hover:bg-gray-100 rounded-md p-1">
+                    <button onClick={handleSignOut} className="mx-3 text-sm">Sign out</button>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
