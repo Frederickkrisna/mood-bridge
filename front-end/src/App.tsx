@@ -15,7 +15,6 @@ function App() {
           <Route path="/auth/login" element={<Login />} />
           <Route path="/auth/register" element={<Register />} />
           <Route path="/dashboard/home" element={<Home />} />
-          <Route path="/dashboard/tracker-mood" element={<TrackerMood/>}/>
         </Routes>
       </Router>
     </ThemeProvider>
