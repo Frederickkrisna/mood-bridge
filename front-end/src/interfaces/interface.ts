@@ -17,6 +17,7 @@ export interface UserDataInterface {
   first_name: string;
   last_name: string;
   password: string;
+  moods: MoodInterface[];
 }
 
 export interface MoodInterface {
@@ -24,6 +25,7 @@ export interface MoodInterface {
   date: string;
 }
 
-export interface TrackerMoodInterface{
-  moods: MoodInterface[];
+export interface ChartDataInterface {
+  desktop: number; // 1 = Positive, 0 = Neutral, -1 = Negative
+  day: string;
 }

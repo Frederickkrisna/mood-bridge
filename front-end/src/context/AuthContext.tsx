@@ -11,6 +11,7 @@ export const AuthContext = createContext<AuthContextType>({
     first_name: "undefined",
     last_name: "undefined",
     password: "undefined",
+    moods: [],
   },
   setUserData: () => {},
 });

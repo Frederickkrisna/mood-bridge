@@ -10,6 +10,7 @@ const defaultUserData: UserDataInterface = {
   first_name: "",
   last_name: "",
   password: "",
+  moods: [],
 };
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
