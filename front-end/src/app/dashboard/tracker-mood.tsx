@@ -1,4 +1,3 @@
-import { TrendingUp } from "lucide-react";
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts";
 import {
   Card,
@@ -20,6 +19,9 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "@/context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { ChartDataInterface } from "@/interfaces/interface";
+import Happy from "@/assets/happy.jpg";
+import Sad from "@/assets/sad.gif";
+import Neutral from "@/assets/neutral.jpg";
 
 const chartConfig = {
   desktop: {
@@ -54,6 +56,16 @@ export default function TrackerMood() {
     }
     setChartData(data);
   }, [userData]);
+
+  const Image = () => {
+    if (chartData[chartData.length - 1]?.desktop == 1) {
+      return <img src={Happy} className="object-fill w-96" />;
+    } else if (chartData[chartData.length - 1]?.desktop == 0) {
+      return <img src={Neutral} className="object-fill w-96" />;
+    } else {
+      return <img src={Sad} className="object-fill w-96" />;
+    }
+  };
 
   return (
     <Card>
@@ -105,12 +117,23 @@ export default function TrackerMood() {
             </LineChart>
           </ChartContainer>
           <CardFooter className="flex-col items-start gap-2 text-sm">
-            <CardDescription>
-              Your mood is currently trending up.
-            </CardDescription>
-            <div className="flex items-center gap-2">
-              <TrendingUp size={16} className="fill-foreground" />
-              <span className="font-semibold text-foreground">+1.5%</span>
+            <div>
+              <CardDescription className="my-4">
+                {chartData[chartData.length - 1]?.desktop == 1
+                  ? "Your mood is currently trending up."
+                  : chartData[chartData.length - 1]?.desktop == 0
+                  ? "Your mood is normal."
+                  : "Your mood is currently trending down."}
+              </CardDescription>
+              <div className="flex justify-center min-h-96 border rounded-lg">
+                <Image />
+              </div>
+              <Button
+                className="bg-slate-800 text-white hover:text-black w-full my-4"
+                onClick={() => navigate("/dashboard/history")}
+              >
+                View Mood History
+              </Button>
             </div>
           </CardFooter>
         </div>
