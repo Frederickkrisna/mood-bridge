@@ -72,18 +72,21 @@ const items = [
     description: "Analyze your feelings and emotions with AI technology.",
     header: <Image1 />,
     icon: <IconMoodCheck className="h-4 w-4 text-neutral-500" />,
+    url: "/dashboard/sentiment-analysis",
   },
   {
     title: "Mood Tracker",
     description: "Take a look back how's your mood progressions.",
     header: <Image2 />,
     icon: <IconChartAreaLine className="h-4 w-4 text-neutral-500" />,
+    url: "/dashboard/tracker-mood",
   },
   {
     title: "Journaling and Reflections",
     description: "Write down your thoughts and reflections.",
     header: <Image3 />,
     icon: <IconWriting className="h-4 w-4 text-neutral-500" />,
+    url: "/dashboard/journaling",
   },
   {
     title: "Chat with fellow sufferers",
@@ -91,12 +94,14 @@ const items = [
       "Understand that you are not alone in this journey. Chat with others.",
     header: <Image4 />,
     icon: <IconActivityHeartbeat className="h-4 w-4 text-neutral-500" />,
+    url: "/dashboard/anonymous-chat",
   },
   {
     title: "24/7 Support",
     description: "Get help from our team of experts.",
     header: <Image5 />,
     icon: <Icon24Hours className="h-4 w-4 text-neutral-500" />,
+    url: "/dashboard/customer-service",
   },
 ];
 
@@ -121,7 +126,7 @@ export default function Home() {
               header={item.header}
               icon={item.icon}
               className={`${i === 3 || i === 6 ? "md:col-span-2" : ""} `}
-              onClick={() => console.log("clicked")}
+              onClick={() => navigate(item.url)}
             />
           ))}
         </BentoGrid>
