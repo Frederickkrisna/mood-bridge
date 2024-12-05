@@ -34,13 +34,16 @@ export default function TrackerMood() {
   const [chartData, setChartData] = useState<ChartDataInterface[]>([]);
   useEffect(() => {
     const data = [];
-    for (const mood of userData.moods) {
-      const options = { weekday: "long", timeZone: "UTC" };
+    for (const mood of userData.moods || []) {
+      const options: Intl.DateTimeFormatOptions = {
+        weekday: "long",
+        timeZone: "UTC",
+      };
       let day;
       try {
         const timestamp = mood.date;
-        const date = new Date(timestamp.seconds * 1000);
-        day = date.toLocaleDateString("en-US", options);
+        const date = new Date((timestamp as any).seconds * 1000);
+        day = new Intl.DateTimeFormat("en-US", options).format(date);
       } catch (error) {
         console.error("Error parsing timestamp:", mood.date, error);
         day = "Invalid Date";
