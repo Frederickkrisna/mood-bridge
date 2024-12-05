@@ -24,6 +24,7 @@
     "firebase": "^11.0.2",
     "framer-motion": "^11.13.1",
     "lucide-react": "^0.462.0",
+    "next": "^15.0.3",
     "next-headers": "^0.0.1",
     "next-secure-headers": "^2.2.0",
     "react": "^18.3.1",
