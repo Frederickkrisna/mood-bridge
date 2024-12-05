@@ -18,3 +18,12 @@ export interface UserDataInterface {
   last_name: string;
   password: string;
 }
+
+export interface MoodInterface {
+  mood: string;
+  date: string;
+}
+
+export interface TrackerMoodInterface{
+  moods: MoodInterface[];
+}
