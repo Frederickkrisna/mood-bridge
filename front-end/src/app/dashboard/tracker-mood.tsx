@@ -16,18 +16,12 @@ import {
 } from "@/components/ui/chart"
 import { Button } from "@/components/ui/button"
 import { IconArrowBack } from "@tabler/icons-react"
-import { useContext, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { AuthContext } from "@/context/AuthContext"
 import { TrackerMoodInterface } from "@/interfaces/interface"
-
-const chartData = [
-    { month: "January", desktop: 1 },
-    { month: "February", desktop: 2 },
-    { month: "March", desktop: 3 },
-    { month: "April", desktop: 1 },
-    { month: "May", desktop: 2 },
-    { month: "June", desktop: 3 },
-]
+import { doc, getDoc } from "firebase/firestore"
+import { db } from "@/lib/firebase"
+import { useNavigate } from "react-router-dom"
   
 const chartConfig = {
     desktop: {
@@ -37,13 +31,42 @@ const chartConfig = {
 } satisfies ChartConfig
 
 export default function TrackerMood(){
+    const navigate = useNavigate();
     const { userData } = useContext(AuthContext);
-    // const [chartData, setChartData] = useState<TrackerMoodInterface[]>([{mood: "", date: ""}]);
+    const [chartData, setChartData] = useState<TrackerMoodInterface[]>();
+    const getMoods = async () => {
+        if(userData.email !== ""){
+            try{
+                const docRef = doc(db, "MsMood", userData.email);
+                const docSnap = await getDoc(docRef);
+                if(docSnap.exists()){
+                    return docSnap.data() as TrackerMoodInterface;
+                }
+                else{
+                    console.log("Data not found");
+                    return null;
+                }
+            }
+            catch(e){
+                console.log("Error getting document:", e);
+                return null;
+            }
+        }
+    }
+    
+    useEffect(() => {
+        const fetchData = async () => {
+            const data = await getMoods();
+            
+        }
+        // fetchData();
+    }, [])
+
     return (
         <Card>
             <CardHeader>
                 <div className="flex flex-row">
-                    <Button className="mr-5 rounded-full">
+                    <Button className="mr-5 rounded-full" onClick={() => navigate('/dashboard/home')}>
                         <IconArrowBack/>
                     </Button>
                     <CardTitle className="font-semibold text-2xl">Your Current Mood:</CardTitle>
