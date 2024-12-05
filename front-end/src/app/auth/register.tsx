@@ -35,6 +35,7 @@ export default function Register() {
         last_name: lastName,
         email: email,
         password: password,
+        moods: [],
       });
       console.log("Document written: ", docRef);
       alert("Account created successfully");
