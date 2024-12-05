@@ -1,4 +1,3 @@
-"use client"
 import { PlaceholdersAndVanishInput } from "@/components/ui/placeholders-and-vanish-input";
 import { motion } from "framer-motion";
 import { useState } from "react";
@@ -6,6 +5,7 @@ import { TrendingUp } from 'lucide-react'
 import { Bar, BarChart, XAxis, YAxis } from "recharts";
 import { IconArrowBack } from "@tabler/icons-react"
 import { Button } from "@/components/ui/button"
+import { useNavigate } from "react-router-dom";
 
 import {
   Card,
@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/chart"
 
 export default function SentimentAnalysis(){
+    const navigate = useNavigate();
     const placeholders = [
         "What has been the highlight of your day so far?",
         "Did anything make you feel stressed or upset today?",
@@ -83,13 +84,15 @@ export default function SentimentAnalysis(){
     return (
     <div className="flex flex-col my-5 mx-5">
       <div>
-      <Button className="mr-5 rounded-full">
+      <Button className="mr-5 rounded-full"
+      onClick={() => navigate("/dashboard/home")}>
         <IconArrowBack/>
       </Button>
       </div>
+
     {display && (<motion.div
-        initial={{opacity:1, y: 100 }}
-        animate={animateOut ? {opacity: 0, y: -50} : {opacity: 1, y: 0 }}
+        initial={{ opacity: 0.5, y: 100 }}
+        animate={animateOut ? { opacity: 0, y: -50 } : { opacity: 1, y: 0 }}
         transition={{
             delay: 0.3,
             duration: 0.8,
@@ -106,6 +109,7 @@ export default function SentimentAnalysis(){
       />
     </motion.div>
     )}
+
     <div className="flex flex-row min-h-screen items-center justify-center pb-20">
     <div>
     {showChart && (<Card className="mx-5">
@@ -156,7 +160,7 @@ export default function SentimentAnalysis(){
     <div>
     {showChart && (<Card className="mx-5">
       <CardHeader>
-        <CardTitle>Emotion</CardTitle>
+        <CardTitle>Positive/Negative/Neutral</CardTitle>
         <CardDescription>
           desc for emotion bla bla bla bla bla
         </CardDescription>
@@ -179,11 +183,7 @@ export default function SentimentAnalysis(){
     </Card>
   )}
     </div>
-    {/* <div>
-    {showChart && ( back button
-  )}
-    </div> */}
-
+    
     </div>
     </div>
     )
