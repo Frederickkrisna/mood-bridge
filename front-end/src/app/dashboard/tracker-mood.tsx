@@ -59,11 +59,11 @@ export default function TrackerMood() {
 
   const Image = () => {
     if (chartData[chartData.length - 1]?.desktop == 1) {
-      return <img src={Happy} className="object-fill w-full" />;
+      return <img src={Happy} className="object-fill w-96" />;
     } else if (chartData[chartData.length - 1]?.desktop == 0) {
-      return <img src={Neutral} className="object-fill w-full" />;
+      return <img src={Neutral} className="object-fill w-96" />;
     } else {
-      return <img src={Sad} className="object-fill w-full" />;
+      return <img src={Sad} className="object-fill w-96" />;
     }
   };
 
