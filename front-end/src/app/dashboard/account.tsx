@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 export default function Account() {
   const navigate = useNavigate();
   return (
-    <div className="h-screen w-scree flex flex-col">
+    <div className="h-screen w-screen flex flex-col">
       {/* Back Button */}
       <div className="p-5">
         <div className="flex items-center">
@@ -33,7 +33,7 @@ export default function Account() {
                   id="firstName"
                   type="text"
                   placeholder="First Name"
-                  className="w-full px-4 py-2 rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none bg-gray-100"
+                  className="w-full px-4 py-2 rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none bg-gray-100 text-black"
                 />
               </div>
               <div className="flex flex-col w-1/2">
@@ -44,7 +44,7 @@ export default function Account() {
                   id="lastName"
                   type="text"
                   placeholder="Last Name"
-                  className="w-full px-4 py-2 rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none bg-gray-100"
+                  className="w-full px-4 py-2 rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none bg-gray-100 text-black"
                 />
               </div>
             </div>
@@ -58,7 +58,7 @@ export default function Account() {
                 id="email"
                 type="email"
                 placeholder="Email"
-                className="w-full px-4 py-2 rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none bg-gray-100"
+                className="w-full px-4 py-2 rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none bg-gray-100 text-black"
               />
             </div>
 
@@ -71,7 +71,7 @@ export default function Account() {
                 id="password"
                 type="password"
                 placeholder="Password"
-                className="w-full px-4 py-2 rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none bg-gray-100"
+                className="w-full px-4 py-2 rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none bg-gray-100 text-black"
               />
             </div>
 
