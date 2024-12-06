@@ -6,6 +6,7 @@ import { Bar, BarChart, XAxis, YAxis } from "recharts";
 import { IconArrowBack } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { LampContainer } from "@/components/ui/lamp";
 
 import {
   Card,
@@ -21,7 +22,6 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { LampContainer } from "@/components/ui/lamp";
 
 export default function SentimentAnalysis() {
   const navigate = useNavigate();
