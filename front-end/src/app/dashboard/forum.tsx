@@ -11,49 +11,22 @@ export default function Forum() {
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas",
     postId: "1",
   };
+
   return (
-    <>
-      <Layout>
-        <div className=" ml-[48vh] flex flex-col min-w-[50vw] max-w-[50vw] overflow-x-hidden">
-          <ForumCard {...dummyItem} />
-          <ForumCard {...dummyItem} />
-          <ForumCard {...dummyItem} />
-          <ForumCard {...dummyItem} />
-          <ForumCard {...dummyItem} />
-          <ForumCard {...dummyItem} />
-          <ForumCard {...dummyItem} />
-          <ForumCard {...dummyItem} />
-          <ForumCard {...dummyItem} />
-          <ForumCard {...dummyItem} />
-          <ForumCard {...dummyItem} />
-          <ForumCard {...dummyItem} />
-          <ForumCard {...dummyItem} />
-          <ForumCard {...dummyItem} />
-          <ForumCard {...dummyItem} />
-          <ForumCard {...dummyItem} />
-          <ForumCard {...dummyItem} />
-          <ForumCard {...dummyItem} />
-          <ForumCard {...dummyItem} />
-          <ForumCard {...dummyItem} />
-          <ForumCard {...dummyItem} />
-          <ForumCard {...dummyItem} />
-          <ForumCard {...dummyItem} />
-          <ForumCard {...dummyItem} />
-          <ForumCard {...dummyItem} />
-          <ForumCard {...dummyItem} />
-          <ForumCard {...dummyItem} />
-          <ForumCard {...dummyItem} />
-          <ForumCard {...dummyItem} />
-          <ForumCard {...dummyItem} />
-          <ForumCard {...dummyItem} />
-          <ForumCard {...dummyItem} />
-          <ForumCard {...dummyItem} />
-          <ForumCard {...dummyItem} />
-          <ForumCard {...dummyItem} />
-          <ForumCard {...dummyItem} />
+    <Layout>
+      <div className="flex flex-row min-h-screen">
+        {/* Main Content */}
+        <div className="flex-1 flex flex-col w-[50vw] overflow-x-hidden px-4 ml-[45vh]">
+          {Array.from({ length: 36 }).map((_, index) => (
+            <ForumCard key={index} {...dummyItem} />
+          ))}
         </div>
-      </Layout>
-      <RightSidebar />
-    </>
+
+        {/* Right Sidebar */}
+        <div className="flex-shrink-0 w-[25rem]">
+          <RightSidebar />
+        </div>
+      </div>
+    </Layout>
   );
 }

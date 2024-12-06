@@ -85,7 +85,7 @@ export default function SentimentAnalysis() {
 
   return (
     <LampContainer>
-      <div className="flex items-start w-screen ml-5 z-50">
+      <div className="flex items-start w-screen fixed  ml-5 z-50">
         <Button
           className="rounded-full"
           onClick={() => navigate("/dashboard/home")}
