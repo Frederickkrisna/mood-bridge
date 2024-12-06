@@ -109,7 +109,6 @@ export default function Home() {
   const { userData } = useContext(AuthContext);
   const navigate = useNavigate();
   useEffect(() => {
-    console.log(userData);
     if (userData.first_name === "") {
       navigate("/");
     }
