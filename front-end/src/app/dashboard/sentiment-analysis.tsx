@@ -21,6 +21,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { LampContainer } from "@/components/ui/lamp";
 
 export default function SentimentAnalysis() {
   const navigate = useNavigate();
@@ -83,8 +84,8 @@ export default function SentimentAnalysis() {
   };
 
   return (
-    <>
-      <div className="mt-5 ml-5 w-fit">
+    <LampContainer>
+      <div className="flex items-start w-screen ml-5 z-50">
         <Button
           className="rounded-full"
           onClick={() => navigate("/dashboard/home")}
@@ -104,7 +105,7 @@ export default function SentimentAnalysis() {
             }}
             className=" flex flex-col justify-center items-center mb-10 sm:mb-20"
           >
-            <h2 className="mb-10 sm:mb-20 text-xl text-center sm:text-5xl dark:text-white text-black">
+            <h2 className="mb-10 sm:mb-20 text-xl text-center sm:text-5xl text-white">
               How are you feeling today?
             </h2>
             <PlaceholdersAndVanishInput
@@ -200,6 +201,6 @@ export default function SentimentAnalysis() {
           </div>
         )}
       </div>
-    </>
+    </LampContainer>
   );
 }

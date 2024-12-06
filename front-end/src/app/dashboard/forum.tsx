@@ -14,7 +14,42 @@ export default function Forum() {
   return (
     <>
       <Layout>
-        <div className="scroll-container ml-[48vh] flex flex-col min-w-[50vw] max-w-[50vw] overflow-x-hidden">
+        <div className=" ml-[48vh] flex flex-col min-w-[50vw] max-w-[50vw] overflow-x-hidden">
+          <ForumCard {...dummyItem} />
+          <ForumCard {...dummyItem} />
+          <ForumCard {...dummyItem} />
+          <ForumCard {...dummyItem} />
+          <ForumCard {...dummyItem} />
+          <ForumCard {...dummyItem} />
+          <ForumCard {...dummyItem} />
+          <ForumCard {...dummyItem} />
+          <ForumCard {...dummyItem} />
+          <ForumCard {...dummyItem} />
+          <ForumCard {...dummyItem} />
+          <ForumCard {...dummyItem} />
+          <ForumCard {...dummyItem} />
+          <ForumCard {...dummyItem} />
+          <ForumCard {...dummyItem} />
+          <ForumCard {...dummyItem} />
+          <ForumCard {...dummyItem} />
+          <ForumCard {...dummyItem} />
+          <ForumCard {...dummyItem} />
+          <ForumCard {...dummyItem} />
+          <ForumCard {...dummyItem} />
+          <ForumCard {...dummyItem} />
+          <ForumCard {...dummyItem} />
+          <ForumCard {...dummyItem} />
+          <ForumCard {...dummyItem} />
+          <ForumCard {...dummyItem} />
+          <ForumCard {...dummyItem} />
+          <ForumCard {...dummyItem} />
+          <ForumCard {...dummyItem} />
+          <ForumCard {...dummyItem} />
+          <ForumCard {...dummyItem} />
+          <ForumCard {...dummyItem} />
+          <ForumCard {...dummyItem} />
+          <ForumCard {...dummyItem} />
+          <ForumCard {...dummyItem} />
           <ForumCard {...dummyItem} />
         </div>
       </Layout>
