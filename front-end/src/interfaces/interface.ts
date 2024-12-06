@@ -20,6 +20,26 @@ export interface UserDataInterface {
   moods: MoodInterface[];
 }
 
+export interface PostInterface {
+  id: string;
+  userId: string;
+  content: string;
+  mood: string;
+  createdAt: string;
+  first_name: string;
+  last_name: string;
+}
+
+export interface CommentInterface {
+  id: string;
+  content: string;
+  createdAt: string;
+  postId: string;
+  userId: string;
+  first_name: string;
+  last_name: string;
+}
+
 export interface MoodInterface {
   mood: string;
   date: string;

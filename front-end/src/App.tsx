@@ -9,6 +9,9 @@ import TrackerMood from "./app/dashboard/tracker-mood";
 import Journaling from "./app/dashboard/journaling";
 import CustomerService from "./app/dashboard/customer-service";
 import AnonymousChat from "./app/dashboard/anonymous-chat";
+import Forum from "./app/dashboard/forum";
+import History from "./app/dashboard/history";
+import Inbox from "./app/dashboard/inbox";
 
 function App() {
   return (
@@ -19,10 +22,19 @@ function App() {
           <Route path="/auth/login" element={<Login />} />
           <Route path="/auth/register" element={<Register />} />
           <Route path="/dashboard/home" element={<Home />} />
-          <Route path="/dashboard/sentiment-analysis" element={<SentimentAnalysis />} />
+          <Route path="/dashboard/forum" element={<Forum />} />
+          <Route path="/dashboard/history" element={<History />} />
+          <Route path="/dashboard/inbox" element={<Inbox />} />
+          <Route
+            path="/dashboard/sentiment-analysis"
+            element={<SentimentAnalysis />}
+          />
           <Route path="/dashboard/tracker-mood" element={<TrackerMood />} />
           <Route path="/dashboard/journaling" element={<Journaling />} />
-          <Route path="/dashboard/customer-service" element={<CustomerService />} />
+          <Route
+            path="/dashboard/customer-service"
+            element={<CustomerService />}
+          />
           <Route path="/dashboard/anonymous-chat" element={<AnonymousChat />} />
         </Routes>
       </Router>

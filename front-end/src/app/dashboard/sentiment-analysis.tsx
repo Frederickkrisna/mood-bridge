@@ -1,10 +1,10 @@
 import { PlaceholdersAndVanishInput } from "@/components/ui/placeholders-and-vanish-input";
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { TrendingUp } from 'lucide-react'
+import { TrendingUp } from "lucide-react";
 import { Bar, BarChart, XAxis, YAxis } from "recharts";
-import { IconArrowBack } from "@tabler/icons-react"
-import { Button } from "@/components/ui/button"
+import { IconArrowBack } from "@tabler/icons-react";
+import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 
 import {
@@ -14,13 +14,14 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart"
+} from "@/components/ui/chart";
+import { LampContainer } from "@/components/ui/lamp";
 
 export default function SentimentAnalysis() {
   const navigate = useNavigate();
@@ -83,119 +84,123 @@ export default function SentimentAnalysis() {
   };
 
   return (
-    <div className="flex flex-col my-5 mx-5">
-      <div>
+    <LampContainer>
+      <div className="flex items-start w-screen fixed  ml-5 z-50">
+        <Button
+          className="rounded-full"
+          onClick={() => navigate("/dashboard/home")}
+        >
+          <IconArrowBack />
+        </Button>
+      </div>
+      <div className="w-screen h-screen items-center justify-center flex flex-col fixed">
         {display && (
-          <Button
-            className="mr-5 rounded-full"
-            onClick={() => navigate("/dashboard/home")}
+          <motion.div
+            initial={{ opacity: 0.5, y: 100 }}
+            animate={animateOut ? { opacity: 0, y: -50 } : { opacity: 1, y: 0 }}
+            transition={{
+              delay: 0.3,
+              duration: 0.8,
+              ease: "easeInOut",
+            }}
+            className=" flex flex-col justify-center items-center mb-10 sm:mb-20"
           >
-            <IconArrowBack />
-          </Button>
+            <h2 className="mb-10 sm:mb-20 text-xl text-center sm:text-5xl text-white">
+              How are you feeling today?
+            </h2>
+            <PlaceholdersAndVanishInput
+              placeholders={placeholders}
+              onChange={handleChange}
+              onSubmit={onSubmit}
+            />
+          </motion.div>
+        )}
+
+        {showChart && (
+          <div className="flex flex-col items-center justify-center mb-10 sm:mb-20">
+            {/* Chart and Emoji Cards */}
+            <div className="flex flex-row items-center justify-center">
+              {/* Chart Card */}
+              <Card className="mx-5 min-h-80 max-h-80">
+                <CardHeader>
+                  <CardTitle>Bar Chart - Mixed</CardTitle>
+                  <CardDescription>January - June 2024</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ChartContainer config={chartConfig}>
+                    <BarChart
+                      accessibilityLayer
+                      data={chartData}
+                      layout="vertical"
+                      margin={{ left: 0 }}
+                    >
+                      <YAxis
+                        dataKey="browser"
+                        type="category"
+                        tickLine={false}
+                        tickMargin={10}
+                        axisLine={false}
+                        tickFormatter={(value) =>
+                          chartConfig[value as keyof typeof chartConfig]?.label
+                        }
+                      />
+                      <XAxis dataKey="visitors" type="number" hide />
+                      <ChartTooltip
+                        cursor={false}
+                        content={<ChartTooltipContent hideLabel />}
+                      />
+                      <Bar dataKey="visitors" layout="vertical" radius={5} />
+                    </BarChart>
+                  </ChartContainer>
+                </CardContent>
+                <CardFooter className="flex-col items-start gap-2 text-sm">
+                  <div className="flex gap-2 font-medium leading-none">
+                    Trending up by 5.2% this month{" "}
+                    <TrendingUp className="h-4 w-4" />
+                  </div>
+                  <div className="leading-none text-muted-foreground">
+                    Showing total visitors for the last 6 months
+                  </div>
+                </CardFooter>
+              </Card>
+
+              {/* Emoji Card */}
+              <Card className="mx-5 min-h-80">
+                <CardHeader>
+                  <CardTitle>Positive/Negative/Neutral</CardTitle>
+                </CardHeader>
+                <CardContent className="flex justify-center p-[-6]">
+                  <img
+                    src="https://freepngimg.com/download/icon/emoji/1000092-expressionless-face-emoji-free-icon.png"
+                    alt="emoticon"
+                    className="max-w-48 max-h-48 object-cover"
+                  />
+                </CardContent>
+                <CardFooter>
+                  <h2>quotes here</h2>
+                </CardFooter>
+              </Card>
+            </div>
+
+            {/* Cancel and Post Buttons */}
+            <div className="flex flex-row gap-5 justify-center p-5">
+              <Button
+                className="px-20 py-2 bg-red-500 text-white rounded-lg"
+                onClick={() => {
+                  setShowChart(false);
+                  setDisplay(true);
+                  setAnimateOut(false);
+                }}
+              >
+                Cancel
+              </Button>
+              <Button className="px-20 py-2 bg-blue-500 text-white rounded-lg">
+                Post
+              </Button>
+            </div>
+          </div>
         )}
       </div>
-
-      {display && (
-        <motion.div
-          initial={{ opacity: 0.5, y: 100 }}
-          animate={animateOut ? { opacity: 0, y: -50 } : { opacity: 1, y: 0 }}
-          transition={{
-            delay: 0.3,
-            duration: 0.8,
-            ease: "easeInOut",
-          }}
-          className="h-[30rem] flex flex-col justify-center items-center px-4"
-        >
-          <h2 className="mb-10 sm:mb-20 text-xl text-center sm:text-5xl dark:text-white text-black">
-            How are you feeling today?
-          </h2>
-          <PlaceholdersAndVanishInput
-            placeholders={placeholders}
-            onChange={handleChange}
-            onSubmit={onSubmit}
-          />
-        </motion.div>
-      )}
-
-      {showChart && (
-        <div className="flex flex-col items-center justify-center">
-          {/* Chart and Emoji Cards */}
-          <div className="flex flex-row items-center justify-center pb-10 mt-20">
-            {/* Chart Card */}
-            <Card className="mx-5">
-              <CardHeader>
-                <CardTitle>Bar Chart - Mixed</CardTitle>
-                <CardDescription>January - June 2024</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ChartContainer config={chartConfig}>
-                  <BarChart
-                    accessibilityLayer
-                    data={chartData}
-                    layout="vertical"
-                    margin={{ left: 0 }}
-                  >
-                    <YAxis
-                      dataKey="browser"
-                      type="category"
-                      tickLine={false}
-                      tickMargin={10}
-                      axisLine={false}
-                      tickFormatter={(value) =>
-                        chartConfig[value as keyof typeof chartConfig]?.label
-                      }
-                    />
-                    <XAxis dataKey="visitors" type="number" hide />
-                    <ChartTooltip
-                      cursor={false}
-                      content={<ChartTooltipContent hideLabel />}
-                    />
-                    <Bar dataKey="visitors" layout="vertical" radius={5} />
-                  </BarChart>
-                </ChartContainer>
-              </CardContent>
-              <CardFooter className="flex-col items-start gap-2 text-sm">
-                <div className="flex gap-2 font-medium leading-none">
-                  Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-                </div>
-                <div className="leading-none text-muted-foreground">
-                  Showing total visitors for the last 6 months
-                </div>
-              </CardFooter>
-            </Card>
-
-            {/* Emoji Card */}
-            <Card className="mx-5">
-              <CardHeader>
-                <CardTitle>Positive/Negative/Neutral</CardTitle>
-                <CardDescription>
-                  desc for emotion bla bla bla bla bla
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <img
-                  src="https://freepngimg.com/download/icon/emoji/1000092-expressionless-face-emoji-free-icon.png"
-                  alt="emoticon"
-                  className="w-full h-48 rounded-lg"
-                />
-              </CardContent>
-              <CardFooter>
-                <h2>quotes here</h2>
-              </CardFooter>
-            </Card>
-          </div>
-
-          {/* Cancel and Post Buttons */}
-          <div className="flex flex-row gap-5 justify-center">
-            <Button className="px-20 py-2 bg-red-500 text-white rounded-lg">
-              Cancel
-            </Button>
-            <Button className="px-20 py-2 bg-blue-500 text-white rounded-lg">
-               Post 
-            </Button>
-          </div>
-        </div>
-      )}
-    </div>
+    </LampContainer>
   );
 }
