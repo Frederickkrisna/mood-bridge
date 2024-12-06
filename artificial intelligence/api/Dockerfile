@@ -6,10 +6,12 @@ WORKDIR /app
 
 # Copy the Flask app and model to the container
 COPY app.py /app/
-COPY model.keras /app/ 
+COPY ./sentiment_classification/model.keras /app/ 
+COPY ./sentiment_classification/LogisticRegression.pkl /app/
+COPY ./mental_illness_classification/model.keras /app/
 
 # Install Python dependencies
-RUN pip install flask nltk numpy tensorflow tensorflowjs
+RUN pip install flask nltk numpy pickle re scikit-learn spacy tensorflow tensorflowjs
 
 # Expose the port Flask will run on
 EXPOSE 5000
