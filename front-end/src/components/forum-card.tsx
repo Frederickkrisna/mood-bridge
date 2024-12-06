@@ -65,7 +65,7 @@ const ForumCard: React.FC<PostInterface> = (props) => {
       </CardContent>
       <CardFooter>
         <div className="flex gap-2 font-medium leading-none">
-          {comments.length}
+          {comments.length} Comments
         </div>
         <button>
           <ChevronDown className="ml-4" />
