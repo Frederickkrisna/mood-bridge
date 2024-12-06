@@ -24,7 +24,7 @@ export default function Journaling() {
             <input
               type="text"
               placeholder="Search..."
-              className="w-full px-4 py-2 bg-gray-200 rounded-full placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="w-full px-4 py-2 text-black bg-gray-200 rounded-full placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500"
             />
           </div>
         </div>
@@ -33,7 +33,7 @@ export default function Journaling() {
           {[...Array(10)].map((_, index) => (
             <div
               key={index}
-              className="bg-white text-black rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow"
+              className="rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow border border-gray-300"
             >
               <h3 className="font-bold text-lg">TitleText</h3>
               <p className="text-sm text-gray-500">July 2nd, 2022</p>
@@ -47,7 +47,7 @@ export default function Journaling() {
       </div>
 
       {/* Editor */}
-      <div className="flex-grow h-full bg-gray-200 mx-5 my-5 rounded-lg shadow-lg p-6 flex flex-col space-y-6">
+      <div className="flex-grow h-screen bg-gray-200 mx-10 my-10 rounded-lg shadow-lg p-6 flex flex-col space-y-6 text-black">
         {/* Title and Save Button */}
         <div className="flex items-center justify-between">
           <input
@@ -62,12 +62,12 @@ export default function Journaling() {
 
         {/* Formatting Toolbar */}
         <div className="flex items-center space-x-4">
-          <select className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+          <select className="px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
             <option>Arial</option>
             <option>Roboto</option>
             <option>Times New Roman</option>
           </select>
-          <select className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+          <select className="px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
             <option>12px</option>
             <option>14px</option>
             <option>16px</option>
