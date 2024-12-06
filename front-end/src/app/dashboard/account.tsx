@@ -1,23 +1,9 @@
-import { Button } from "@/components/ui/button";
-import { IconArrowBack } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
 
 export default function Account() {
   const navigate = useNavigate();
   return (
     <div className="h-screen w-screen flex flex-col">
-      {/* Back Button */}
-      <div className="p-5">
-        <div className="flex items-center">
-          <Button
-            className="rounded-full hover:bg-gray-600"
-            onClick={() => navigate("/dashboard/home")}
-          >
-            <IconArrowBack />
-          </Button>
-        </div>
-      </div>
-
       {/* Edit Profile Section */}
       <div className="flex-grow flex justify-center items-center">
         <div className="w-full max-w-md p-8 rounded-lg shadow-lg border border-purple-500">
