@@ -59,11 +59,11 @@ export default function TrackerMood() {
 
   const Image = () => {
     if (chartData[chartData.length - 1]?.desktop == 1) {
-      return <img src={Happy} className="object-fill w-96" />;
+      return <img src={Happy} className="object-fill w-96 rounded-lg" />;
     } else if (chartData[chartData.length - 1]?.desktop == 0) {
-      return <img src={Neutral} className="object-fill w-96" />;
+      return <img src={Neutral} className="object-fill w-96 rounded-lg" />;
     } else {
-      return <img src={Sad} className="object-fill w-96" />;
+      return <img src={Sad} className="object-fill w-96 rounded-lg" />;
     }
   };
 
@@ -116,7 +116,7 @@ export default function TrackerMood() {
               ></Line>
             </LineChart>
           </ChartContainer>
-          <CardFooter className="flex-col items-start gap-2 text-sm">
+          <CardFooter className="flex-col items-start justify-center p-[-6] gap-2 text-sm">
             <div>
               <CardDescription className="my-4">
                 {chartData[chartData.length - 1]?.desktop == 1

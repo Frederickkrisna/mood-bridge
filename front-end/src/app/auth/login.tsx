@@ -73,7 +73,7 @@ export default function Login() {
       className="flex items-center text-center justify-center"
     >
       {isActive.login && (
-        <div className="w-screen h-screen flex justify-center items-center text-white">
+        <div className="w-full h-full flex justify-center items-center text-white">
           <form className="form-content p-5 min-w-[40vh] rounded-lg border-r-boxShadow-input backdrop-blur-2xl border border-slate-700">
             <div className="font-semibold text-3xl pb-5 w-full text-center text-white">
               Sign In

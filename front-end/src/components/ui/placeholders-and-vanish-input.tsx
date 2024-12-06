@@ -1,25 +1,25 @@
 "use client";
- 
+
 import { AnimatePresence, motion } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
- 
+
 export function PlaceholdersAndVanishInput({
   placeholders,
   onChange,
   onSubmit,
-}: {
+}: Readonly<{
   placeholders: string[];
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
-}) {
+}>) {
   const [currentPlaceholder, setCurrentPlaceholder] = useState(0);
- 
+
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const startAnimation = () => {
     intervalRef.current = setInterval(() => {
       setCurrentPlaceholder((prev) => (prev + 1) % placeholders.length);
-    }, 3400);
+    }, 5000);
   };
   const handleVisibilityChange = () => {
     if (document.visibilityState !== "visible" && intervalRef.current) {
@@ -29,11 +29,11 @@ export function PlaceholdersAndVanishInput({
       startAnimation(); // Restart the interval when the tab becomes visible
     }
   };
- 
+
   useEffect(() => {
     startAnimation();
     document.addEventListener("visibilitychange", handleVisibilityChange);
- 
+
     return () => {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
@@ -41,34 +41,34 @@ export function PlaceholdersAndVanishInput({
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, [placeholders]);
- 
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const newDataRef = useRef<any[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
   const [value, setValue] = useState("");
   const [animating, setAnimating] = useState(false);
- 
+
   const draw = useCallback(() => {
     if (!inputRef.current) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
- 
+
     canvas.width = 800;
     canvas.height = 800;
     ctx.clearRect(0, 0, 800, 800);
     const computedStyles = getComputedStyle(inputRef.current);
- 
+
     const fontSize = parseFloat(computedStyles.getPropertyValue("font-size"));
     ctx.font = `${fontSize * 2}px ${computedStyles.fontFamily}`;
     ctx.fillStyle = "#FFF";
     ctx.fillText(value, 16, 40);
- 
+
     const imageData = ctx.getImageData(0, 0, 800, 800);
     const pixelData = imageData.data;
     const newData: any[] = [];
- 
+
     for (let t = 0; t < 800; t++) {
       let i = 4 * t * 800;
       for (let n = 0; n < 800; n++) {
@@ -91,7 +91,7 @@ export function PlaceholdersAndVanishInput({
         }
       }
     }
- 
+
     newDataRef.current = newData.map(({ x, y, color }) => ({
       x,
       y,
@@ -99,11 +99,11 @@ export function PlaceholdersAndVanishInput({
       color: `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${color[3]})`,
     }));
   }, [value]);
- 
+
   useEffect(() => {
     draw();
   }, [value, draw]);
- 
+
   const animate = (start: number) => {
     const animateFrame = (pos: number = 0) => {
       requestAnimationFrame(() => {
@@ -148,17 +148,17 @@ export function PlaceholdersAndVanishInput({
     };
     animateFrame(start);
   };
- 
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && !animating) {
       vanishAndSubmit();
     }
   };
- 
+
   const vanishAndSubmit = () => {
     setAnimating(true);
     draw();
- 
+
     const value = inputRef.current?.value || "";
     if (value && inputRef.current) {
       const maxX = newDataRef.current.reduce(
@@ -168,7 +168,7 @@ export function PlaceholdersAndVanishInput({
       animate(maxX);
     }
   };
- 
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     vanishAndSubmit();
@@ -205,7 +205,7 @@ export function PlaceholdersAndVanishInput({
           animating && "text-transparent dark:text-transparent"
         )}
       />
- 
+
       <button
         disabled={!value}
         type="submit"
@@ -242,7 +242,7 @@ export function PlaceholdersAndVanishInput({
           <path d="M13 6l6 6" />
         </motion.svg>
       </button>
- 
+
       <div className="absolute inset-0 flex items-center rounded-full pointer-events-none">
         <AnimatePresence mode="wait">
           {!value && (

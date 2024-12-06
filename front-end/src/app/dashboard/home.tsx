@@ -116,8 +116,8 @@ export default function Home() {
   }, [userData, navigate]);
   return (
     <Layout>
-      <div className="scroll-container max-w-8xl mx-auto ml-5 mt-5 my-10 ">
-        <BentoGrid className="overflow-y-hidden">
+      <div className="scroll-container fixed ml-[45vh] mr-[5vh]">
+        <BentoGrid>
           {items.map((item, i) => (
             <BentoGridItem
               key={i}
@@ -125,7 +125,9 @@ export default function Home() {
               description={item.description}
               header={item.header}
               icon={item.icon}
-              className={`${i === 3 || i === 6 ? "md:col-span-2" : ""} `}
+              className={`${
+                i === 3 || i === 6 ? "md:col-span-2" : ""
+              } border-2 border-slate-100 dark:border-neutral-700`}
               onClick={() => navigate(item.url)}
             />
           ))}
