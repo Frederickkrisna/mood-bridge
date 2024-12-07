@@ -26,7 +26,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { MoodInterface, PredictionInterface } from "@/interfaces/interface";
+import { PredictionInterface } from "@/interfaces/interface";
 import { doc, updateDoc, Timestamp, setDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { AuthContext } from "@/context/AuthContext";
