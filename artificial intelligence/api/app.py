@@ -14,8 +14,10 @@ from nltk.stem import WordNetLemmatizer
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 loaded_model_SANN = tf.keras.models.load_model('./sentiment_classification/model.keras')
 print('Loaded SANN model')
@@ -77,8 +79,8 @@ def sann_predict():
         prediction = loaded_model_SANN.predict(text_padded)
         prediction_class = prediction.argmax(axis=1)  
         encoder = LabelEncoder()
+        encoder.fit(['neutral', 'negative', 'positive'])
         prediction_label = encoder.inverse_transform(prediction_class)[0]
-        
         return jsonify({'prediction': prediction_label}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -107,24 +109,23 @@ def sann_predict():
 #     except Exception as e:
 #         return jsonify({'error': str(e)}), 500
 
-# @app.route('/salr-predict', methods=['POST'])
-# def salr_predict():
-#     try:
-#         data = request.json
-#         if 'input' not in data:
-#             return jsonify({'error': 'Invalid Input Data'}), 400
-#         text = np.array(data['input'])
-#         if text.size == 0:
-#             return jsonify({'error': 'Invalid Input Data'}), 400
-#         vectorizer = TfidfVectorizer()
-#         text = preprocess_text(text)
-#         text = remove_stopwords(text)
-#         text = understand_text(text)
-#         text = vectorizer.transform(text)
-#         prediction = loaded_model_SALR.predict(text)
-#         return jsonify({'prediction': prediction}), 200
-#     except Exception as e:
-#         return jsonify({'error': str(e)}), 500
+@app.route('/salr-predict', methods=['POST'])
+def salr_predict():
+    try:
+        data = request.json
+        if 'input' not in data:
+            return jsonify({'error': 'Invalid Input Data'}), 400
+        text = data['input']
+        if len(text.strip()) == 0:
+            return jsonify({'error': 'Invalid Input Data'}), 400
+        text = preprocess_text(text)
+        text = [text]
+        vectorizer = pickle.load(open('./sentiment_classification/TfidfVectorizer.pkl', 'rb'))
+        text = vectorizer.transform(text)
+        prediction = loaded_model_SALR.predict(text)
+        return jsonify({'prediction': prediction[0]}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
     
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

@@ -1,12 +1,16 @@
 import { PlaceholdersAndVanishInput } from "@/components/ui/placeholders-and-vanish-input";
 import { motion } from "framer-motion";
-import { useState } from "react";
-import { TrendingUp } from "lucide-react";
+import { useContext, useState } from "react";
+import { Salad, TrendingUp } from "lucide-react";
 import { Bar, BarChart, XAxis, YAxis } from "recharts";
 import { IconArrowBack } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { LampContainer } from "@/components/ui/lamp";
+import axios from "axios";
+import Positive from "@/assets/Positive.png";
+import Negative from "@/assets/Negative.png";
+import Neutral from "@/assets/Neutral.png";
 
 import {
   Card,
@@ -22,9 +26,20 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { MoodInterface, PredictionInterface } from "@/interfaces/interface";
+import { doc, updateDoc } from "firebase/firestore";
+import { db } from "@/lib/firebase";
+import { AuthContext } from "@/context/AuthContext";
 
 export default function SentimentAnalysis() {
+  const { userData } = useContext(AuthContext);
+  const [moods, setMoods] = useState(userData.moods);
+  const [mood, setMood] = useState<MoodInterface>({ mood: "", date: "" });
   const navigate = useNavigate();
+  const [input, setInput] = useState("");
+  const [salr, setSalr] = useState<PredictionInterface>({
+    prediction: "",
+  });
   const placeholders = [
     "What has been the highlight of your day so far?",
     "Did anything make you feel stressed or upset today?",
@@ -71,16 +86,128 @@ export default function SentimentAnalysis() {
   const [display, setDisplay] = useState(true);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(e.target.value);
+    setInput(e.target.value);
   };
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+
+  const salr_predict = async (text: string) => {
+    try {
+      const response = await axios.post("http://localhost:5000/salr-predict", {
+        input: text,
+      });
+      return response.data;
+    } catch (error) {
+      console.log("Error: ", error);
+      throw error;
+    }
+  };
+
+  const updateUser = async () => {
+    try {
+      await updateDoc(doc(db, "MsUser", userData.email), {
+        email: userData.email,
+        first_name: userData.first_name,
+        last_name: userData.last_name,
+        password: userData.password,
+        moods: [...userData.moods, mood],
+        userId: userData.userId,
+      });
+      console.log(userData.moods);
+    } catch (error) {
+      console.log("Error: ", error);
+      alert("Error updating user");
+      return;
+    }
+  };
+
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    animateOut && setAnimateOut(false);
-    setTimeout(() => {
-      setAnimateOut(true);
-      setShowChart(true);
-      setDisplay(false);
-    }, 1000);
+    if (!input) {
+      alert("Please enter some text");
+      return;
+    }
+    try {
+      const data = await salr_predict(input);
+      setSalr(data);
+
+      const prediction =
+        data.prediction.charAt(0).toUpperCase() + data.prediction.slice(1);
+      const now = new Date();
+      const formattedDate = `${now.toLocaleString("en-US", {
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+      })} at ${now.toLocaleTimeString("en-US", {
+        hour: "numeric",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: true,
+      })} ${Intl.DateTimeFormat().resolvedOptions().timeZone}`;
+
+      setSalr(data);
+      setMood({ mood: prediction, date: formattedDate });
+      await updateUser();
+      setAnimateOut(false);
+      setTimeout(() => {
+        setAnimateOut(true);
+        setShowChart(true);
+        setDisplay(false);
+      }, 1000);
+    } catch (error) {
+      console.log("Error: ", error);
+    }
+  };
+
+  const Emoji = () => {
+    switch (salr.prediction) {
+      case "positive":
+        return (
+          <img
+            src={Positive}
+            alt="positive"
+            className="max-w-44 object-cover"
+          />
+        );
+      case "negative":
+        return (
+          <img
+            src={Negative}
+            alt="negative"
+            className="max-w-44 object-cover"
+          />
+        );
+      case "neutral":
+        return (
+          <img src={Neutral} alt="neutral" className="max-w-44 object-cover" />
+        );
+      default:
+        return <Salad />;
+    }
+  };
+
+  const Quotes = () => {
+    switch (salr.prediction) {
+      case "positive":
+        return (
+          <h2 className="flex justify-center items-center">
+            You feel happy, Keep up the good works!
+          </h2>
+        );
+      case "negative":
+        return (
+          <h2 className="flex justify-center items-center">
+            Daily Reminder: Be Grateful for what you have while working for what
+            you want
+          </h2>
+        );
+      case "neutral":
+        return (
+          <h2 className="flex justify-center items-center">
+            Be Proud of your progress
+          </h2>
+        );
+      default:
+        return <h2 className="flex justify-center items-center">Quotes</h2>;
+    }
   };
 
   return (
@@ -165,19 +292,17 @@ export default function SentimentAnalysis() {
               </Card>
 
               {/* Emoji Card */}
-              <Card className="mx-5 min-h-80">
+              <Card className="mx-5">
                 <CardHeader>
-                  <CardTitle>Positive/Negative/Neutral</CardTitle>
+                  <CardTitle>{salr.prediction}</CardTitle>
                 </CardHeader>
                 <CardContent className="flex justify-center p-[-6]">
-                  <img
-                    src="https://freepngimg.com/download/icon/emoji/1000092-expressionless-face-emoji-free-icon.png"
-                    alt="emoticon"
-                    className="max-w-48 max-h-48 object-cover"
-                  />
+                  <Emoji />
                 </CardContent>
                 <CardFooter>
-                  <h2>quotes here</h2>
+                  <div className="flex justify-center items-center p-5 w-96">
+                    <Quotes />
+                  </div>
                 </CardFooter>
               </Card>
             </div>
