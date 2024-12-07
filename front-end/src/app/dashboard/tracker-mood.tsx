@@ -1,4 +1,10 @@
-import { CartesianGrid, Line, LineChart, XAxis } from "recharts";
+import {
+  CartesianGrid,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  XAxis,
+} from "recharts";
 import {
   Card,
   CardContent,
@@ -68,7 +74,7 @@ export default function TrackerMood() {
   };
 
   return (
-    <Card>
+    <Card className="w-screen h-screen">
       <CardHeader>
         <div className="flex flex-row">
           <Button
@@ -83,7 +89,7 @@ export default function TrackerMood() {
         </div>
       </CardHeader>
       <CardContent>
-        <div className="flex flex-row">
+        <div className="flex flex-row overflow-visible">
           <ChartContainer config={chartConfig} className="flex-grow">
             <LineChart
               accessibilityLayer
@@ -91,8 +97,8 @@ export default function TrackerMood() {
               margin={{
                 left: 12,
                 right: 12,
-                top: 50,
-                bottom: 50,
+                top: 12,
+                bottom: 12,
               }}
             >
               <CartesianGrid vertical={false} />
@@ -109,9 +115,9 @@ export default function TrackerMood() {
               />
               <Line
                 dataKey="desktop"
-                type="natural"
+                type="monotone"
                 stroke="var(--color-desktop)"
-                strokeWidth={2}
+                strokeWidth={4}
                 dot={false}
               ></Line>
             </LineChart>
