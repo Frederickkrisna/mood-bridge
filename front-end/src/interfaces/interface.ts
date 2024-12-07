@@ -1,4 +1,5 @@
 import { User } from "firebase/auth";
+import { Timestamp } from "firebase/firestore";
 
 export interface AuthProviderProps {
   children: React.ReactNode;
@@ -42,7 +43,7 @@ export interface CommentInterface {
 
 export interface MoodInterface {
   mood: string;
-  date: string;
+  date: string | Timestamp;
 }
 
 export interface ChartDataInterface {
