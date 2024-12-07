@@ -11,7 +11,7 @@ import CustomerService from "./app/dashboard/customer-service";
 import AnonymousChat from "./app/dashboard/anonymous-chat";
 import Forum from "./app/dashboard/forum";
 import History from "./app/dashboard/history";
-import Inbox from "./app/dashboard/inbox";
+import Aboutus from "./app/dashboard/aboutus";
 import Account from "./app/dashboard/account";
 
 function App() {
@@ -26,7 +26,7 @@ function App() {
           <Route path="/dashboard/forum" element={<Forum />} />
           <Route path="/dashboard/history" element={<History />} />
           <Route path="/dashboard/account" element={<Account/>} />
-          <Route path="/dashboard/inbox" element={<Inbox />} />
+          <Route path="/dashboard/about-us" element={<Aboutus />} />
           <Route
             path="/dashboard/sentiment-analysis"
             element={<SentimentAnalysis />}
