@@ -26,20 +26,21 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { MoodInterface, PredictionInterface } from "@/interfaces/interface";
-import { doc, updateDoc } from "firebase/firestore";
+import { PredictionInterface } from "@/interfaces/interface";
+import { doc, updateDoc, Timestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { AuthContext } from "@/context/AuthContext";
 
 export default function SentimentAnalysis() {
-  const { userData } = useContext(AuthContext);
-  const [moods, setMoods] = useState(userData.moods);
-  const [mood, setMood] = useState<MoodInterface>({ mood: "", date: "" });
   const navigate = useNavigate();
+  const { userData } = useContext(AuthContext);
   const [input, setInput] = useState("");
   const [salr, setSalr] = useState<PredictionInterface>({
     prediction: "",
   });
+  const [animateOut, setAnimateOut] = useState(false);
+  const [showChart, setShowChart] = useState(false);
+  const [display, setDisplay] = useState(true);
   const placeholders = [
     "What has been the highlight of your day so far?",
     "Did anything make you feel stressed or upset today?",
@@ -81,10 +82,6 @@ export default function SentimentAnalysis() {
     },
   } satisfies ChartConfig;
 
-  const [animateOut, setAnimateOut] = useState(false);
-  const [showChart, setShowChart] = useState(false);
-  const [display, setDisplay] = useState(true);
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInput(e.target.value);
   };
@@ -101,17 +98,20 @@ export default function SentimentAnalysis() {
     }
   };
 
-  const updateUser = async () => {
+  const updateUser = async (prediction: string) => {
     try {
+      const newMood = {
+        mood: prediction.charAt(0).toUpperCase() + prediction.slice(1),
+        date: Timestamp.fromDate(new Date()),
+      };
       await updateDoc(doc(db, "MsUser", userData.email), {
         email: userData.email,
         first_name: userData.first_name,
         last_name: userData.last_name,
         password: userData.password,
-        moods: [...userData.moods, mood],
+        moods: [...userData.moods, newMood],
         userId: userData.userId,
       });
-      console.log(userData.moods);
     } catch (error) {
       console.log("Error: ", error);
       alert("Error updating user");
@@ -128,24 +128,7 @@ export default function SentimentAnalysis() {
     try {
       const data = await salr_predict(input);
       setSalr(data);
-
-      const prediction =
-        data.prediction.charAt(0).toUpperCase() + data.prediction.slice(1);
-      const now = new Date();
-      const formattedDate = `${now.toLocaleString("en-US", {
-        month: "long",
-        day: "numeric",
-        year: "numeric",
-      })} at ${now.toLocaleTimeString("en-US", {
-        hour: "numeric",
-        minute: "2-digit",
-        second: "2-digit",
-        hour12: true,
-      })} ${Intl.DateTimeFormat().resolvedOptions().timeZone}`;
-
-      setSalr(data);
-      setMood({ mood: prediction, date: formattedDate });
-      await updateUser();
+      await updateUser(data.prediction);
       setAnimateOut(false);
       setTimeout(() => {
         setAnimateOut(true);
@@ -164,7 +147,7 @@ export default function SentimentAnalysis() {
           <img
             src={Positive}
             alt="positive"
-            className="max-w-44 object-cover"
+            className="max-w-44 p-2 object-fit"
           />
         );
       case "negative":
@@ -172,12 +155,16 @@ export default function SentimentAnalysis() {
           <img
             src={Negative}
             alt="negative"
-            className="max-w-44 object-cover"
+            className="max-w-44 p-2 object-fit"
           />
         );
       case "neutral":
         return (
-          <img src={Neutral} alt="neutral" className="max-w-44 object-cover" />
+          <img
+            src={Neutral}
+            alt="neutral"
+            className="max-w-44 p-2 object-fit"
+          />
         );
       default:
         return <Salad />;
@@ -188,21 +175,20 @@ export default function SentimentAnalysis() {
     switch (salr.prediction) {
       case "positive":
         return (
-          <h2 className="flex justify-center items-center">
+          <h2 className="flex font-semibold justify-center items-center text-center">
             You feel happy, Keep up the good works!
           </h2>
         );
       case "negative":
         return (
-          <h2 className="flex justify-center items-center">
-            Daily Reminder: Be Grateful for what you have while working for what
-            you want
+          <h2 className="flex font-semibold justify-center items-center text-center">
+            Your feelings are negative, Hope you feel better!
           </h2>
         );
       case "neutral":
         return (
-          <h2 className="flex justify-center items-center">
-            Be Proud of your progress
+          <h2 className="flex justify-center items-center text-center">
+            Be Proud of your progress!
           </h2>
         );
       default:
@@ -211,121 +197,135 @@ export default function SentimentAnalysis() {
   };
 
   return (
-    <LampContainer>
-      <div className="flex items-start w-screen fixed  ml-5 z-50">
-        <Button
-          className="rounded-full"
-          onClick={() => navigate("/dashboard/home")}
-        >
-          <IconArrowBack />
-        </Button>
-      </div>
-      <div className="w-screen h-screen items-center justify-center flex flex-col fixed">
-        {display && (
-          <motion.div
-            initial={{ opacity: 0.5, y: 100 }}
-            animate={animateOut ? { opacity: 0, y: -50 } : { opacity: 1, y: 0 }}
-            transition={{
-              delay: 0.3,
-              duration: 0.8,
-              ease: "easeInOut",
-            }}
-            className=" flex flex-col justify-center items-center mb-10 sm:mb-20"
+    <>
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" />
+      <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet"
+      ></link>
+      <LampContainer>
+        <div className="flex items-start w-screen fixed  ml-5 z-50">
+          <Button
+            className="rounded-full"
+            onClick={() => navigate("/dashboard/home")}
           >
-            <h2 className="mb-10 sm:mb-20 text-xl text-center sm:text-5xl text-white">
-              How are you feeling today?
-            </h2>
-            <PlaceholdersAndVanishInput
-              placeholders={placeholders}
-              onChange={handleChange}
-              onSubmit={onSubmit}
-            />
-          </motion.div>
-        )}
+            <IconArrowBack />
+          </Button>
+        </div>
+        <div className="w-screen h-screen items-center justify-center flex flex-col fixed">
+          {display && (
+            <motion.div
+              initial={{ opacity: 0.5, y: 100 }}
+              animate={
+                animateOut ? { opacity: 0, y: -50 } : { opacity: 1, y: 0 }
+              }
+              transition={{
+                delay: 0.3,
+                duration: 0.8,
+                ease: "easeInOut",
+              }}
+              className=" flex flex-col justify-center items-center mb-10 sm:mb-20"
+            >
+              <h2 className="mb-10 sm:mb-20 text-xl text-center sm:text-5xl text-white">
+                How are you feeling today?
+              </h2>
+              <PlaceholdersAndVanishInput
+                placeholders={placeholders}
+                onChange={handleChange}
+                onSubmit={onSubmit}
+              />
+            </motion.div>
+          )}
 
-        {showChart && (
-          <div className="flex flex-col items-center justify-center mb-10 sm:mb-20">
-            {/* Chart and Emoji Cards */}
-            <div className="flex flex-row items-center justify-center">
-              {/* Chart Card */}
-              <Card className="mx-5 min-h-80 max-h-80">
-                <CardHeader>
-                  <CardTitle>Bar Chart - Mixed</CardTitle>
-                  <CardDescription>January - June 2024</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <ChartContainer config={chartConfig}>
-                    <BarChart
-                      accessibilityLayer
-                      data={chartData}
-                      layout="vertical"
-                      margin={{ left: 0 }}
-                    >
-                      <YAxis
-                        dataKey="browser"
-                        type="category"
-                        tickLine={false}
-                        tickMargin={10}
-                        axisLine={false}
-                        tickFormatter={(value) =>
-                          chartConfig[value as keyof typeof chartConfig]?.label
-                        }
-                      />
-                      <XAxis dataKey="visitors" type="number" hide />
-                      <ChartTooltip
-                        cursor={false}
-                        content={<ChartTooltipContent hideLabel />}
-                      />
-                      <Bar dataKey="visitors" layout="vertical" radius={5} />
-                    </BarChart>
-                  </ChartContainer>
-                </CardContent>
-                <CardFooter className="flex-col items-start gap-2 text-sm">
-                  <div className="flex gap-2 font-medium leading-none">
-                    Trending up by 5.2% this month{" "}
-                    <TrendingUp className="h-4 w-4" />
-                  </div>
-                  <div className="leading-none text-muted-foreground">
-                    Showing total visitors for the last 6 months
-                  </div>
-                </CardFooter>
-              </Card>
+          {showChart && (
+            <div className="flex flex-col items-center justify-center mb-10 sm:mb-20">
+              {/* Chart and Emoji Cards */}
+              <div className="flex flex-row items-center justify-center">
+                {/* Chart Card */}
+                <Card className="mx-5 min-h-80 max-h-80">
+                  <CardHeader>
+                    <CardTitle>Bar Chart - Mixed</CardTitle>
+                    <CardDescription>Mental Illness</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <ChartContainer config={chartConfig}>
+                      <BarChart
+                        accessibilityLayer
+                        data={chartData}
+                        layout="vertical"
+                        margin={{ left: 0 }}
+                      >
+                        <YAxis
+                          dataKey="browser"
+                          type="category"
+                          tickLine={false}
+                          tickMargin={10}
+                          axisLine={false}
+                          tickFormatter={(value) =>
+                            chartConfig[value as keyof typeof chartConfig]
+                              ?.label
+                          }
+                        />
+                        <XAxis dataKey="visitors" type="number" hide />
+                        <ChartTooltip
+                          cursor={false}
+                          content={<ChartTooltipContent hideLabel />}
+                        />
+                        <Bar dataKey="visitors" layout="vertical" radius={5} />
+                      </BarChart>
+                    </ChartContainer>
+                  </CardContent>
+                  <CardFooter className="flex-col items-start gap-2 text-sm">
+                    <div className="flex gap-2 font-medium leading-none">
+                      Trending up by 5.2% this month{" "}
+                      <TrendingUp className="h-4 w-4" />
+                    </div>
+                    <div className="leading-none text-muted-foreground">
+                      Showing total visitors for the last 6 months
+                    </div>
+                  </CardFooter>
+                </Card>
 
-              {/* Emoji Card */}
-              <Card className="mx-5">
-                <CardHeader>
-                  <CardTitle>{salr.prediction}</CardTitle>
-                </CardHeader>
-                <CardContent className="flex justify-center p-[-6]">
-                  <Emoji />
-                </CardContent>
-                <CardFooter>
-                  <div className="flex justify-center items-center p-5 w-96">
-                    <Quotes />
-                  </div>
-                </CardFooter>
-              </Card>
+                {/* Emoji Card */}
+                <Card className="mx-5">
+                  <CardHeader>
+                    <CardTitle className="w-full flex items-center justify-center text-2xl">
+                      {salr.prediction.charAt(0).toUpperCase() +
+                        salr.prediction.slice(1)}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="flex justify-center p-[-6]">
+                    <Emoji />
+                  </CardContent>
+                  <CardFooter>
+                    <div className="flex justify-center items-center p-5 w-96">
+                      <Quotes />
+                    </div>
+                  </CardFooter>
+                </Card>
+              </div>
+
+              {/* Cancel and Post Buttons */}
+              <div className="flex flex-row gap-5 justify-center p-5">
+                <Button
+                  className="px-20 py-2 bg-red-500 text-white rounded-lg"
+                  onClick={() => {
+                    setShowChart(false);
+                    setDisplay(true);
+                    setAnimateOut(false);
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button className="px-20 py-2 bg-blue-500 text-white rounded-lg">
+                  Post
+                </Button>
+              </div>
             </div>
-
-            {/* Cancel and Post Buttons */}
-            <div className="flex flex-row gap-5 justify-center p-5">
-              <Button
-                className="px-20 py-2 bg-red-500 text-white rounded-lg"
-                onClick={() => {
-                  setShowChart(false);
-                  setDisplay(true);
-                  setAnimateOut(false);
-                }}
-              >
-                Cancel
-              </Button>
-              <Button className="px-20 py-2 bg-blue-500 text-white rounded-lg">
-                Post
-              </Button>
-            </div>
-          </div>
-        )}
-      </div>
-    </LampContainer>
+          )}
+        </div>
+      </LampContainer>
+    </>
   );
 }
