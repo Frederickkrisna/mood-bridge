@@ -9,9 +9,23 @@ COPY app.py /app/
 COPY ./sentiment_classification/model.keras /app/ 
 COPY ./sentiment_classification/LogisticRegression.pkl /app/
 COPY ./mental_illness_classification/model.keras /app/
+COPY requirements.txt .
+
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    libjpeg-dev \
+    liblapack-dev \
+    libopenblas-dev \
+    libpng-dev \
+    python3-dev \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies
-RUN pip install flask nltk numpy pickle re scikit-learn spacy tensorflow tensorflowjs
+RUN pip install --no-cache-dir -r requirements.txt
+
+RUN python -m spacy download en_core_web_sm
+
+COPY . .
 
 # Expose the port Flask will run on
 EXPOSE 5000

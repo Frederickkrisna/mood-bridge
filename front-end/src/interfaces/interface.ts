@@ -49,3 +49,7 @@ export interface ChartDataInterface {
   desktop: number; // 1 = Positive, 0 = Neutral, -1 = Negative
   day: string;
 }
+
+export interface PredictionInterface {
+  prediction: string;
+}
