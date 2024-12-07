@@ -1,10 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { IconArrowBack } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
-import { collection, getDocs, addDoc } from "firebase/firestore";
+import { collection, getDocs, addDoc, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { JournalInterface } from "@/interfaces/interface";
 import { db } from "@/lib/firebase";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 export default function Journaling() {
   const navigate = useNavigate();
@@ -13,26 +14,51 @@ export default function Journaling() {
   const [content, setContent] = useState("");
 
   useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        navigate("/login"); // Redirect to login if not authenticated
+      }
+    });
+
+    return () => unsubscribe();
+  }, [navigate]);
+
+  useEffect(() => {
     const fetchPosts = async () => {
       try {
+        const auth = getAuth();
+        const currentUser = auth.currentUser;
+  
+        if (!currentUser?.email) {
+          alert("You must be logged in to view journal entries!");
+          return;
+        }
+  
         const MsJournal = collection(db, "MsJournal");
-        const snapshot = await getDocs(MsJournal);
-        const posts = snapshot.docs.map((doc) => {
-          const data = doc.data();
-          const createdAt = data.createdAt?.toDate
-            ? data.createdAt.toDate()
-            : new Date();
-          return {
-            id: doc.id,
-            ...data,
-            createdAt: createdAt.toLocaleString(),
-          };
-        });
-        setPosts(posts as JournalInterface[]);
+        const q = query(MsJournal, where("userId", "==", currentUser.email));
+        const snapshot = await getDocs(q);
+  
+        const posts = snapshot.docs
+          .map((doc) => {
+            const data = doc.data();
+            const createdAt = data.createdAt?.toDate
+              ? data.createdAt.toDate()
+              : new Date();
+            return {
+              id: doc.id,
+              ...data,
+              createdAt,
+            } as JournalInterface;
+          })
+          .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()); // Ascending order
+  
+        setPosts(posts);
       } catch (e) {
         console.error("Error fetching posts: ", e);
       }
     };
+  
     fetchPosts();
   }, []);
 
@@ -43,8 +69,16 @@ export default function Journaling() {
     }
   
     try {
+      const auth = getAuth();
+      const currentUser = auth.currentUser;
+  
+      if (!currentUser?.email) {
+        alert("You must be logged in to save a journal entry!");
+        return;
+      }
+  
       const newPost: Omit<JournalInterface, "id"> = {
-        userId: "defaultUser",
+        userId: currentUser.email, 
         title,
         content,
         createdAt: new Date(),
@@ -53,14 +87,22 @@ export default function Journaling() {
       const MsJournal = collection(db, "MsJournal");
       const docRef = await addDoc(MsJournal, newPost);
   
-      setPosts((prevPosts) => [
-        ...prevPosts,
-        {
-          id: docRef.id,
-          ...newPost,
-        },
-      ]);
+      setPosts((prevPosts) => {
+        const updatedPosts = [
+          ...prevPosts,
+          {
+            ...newPost,
+            id: docRef.id,
+            createdAt: newPost.createdAt,
+          },
+        ];
+        return updatedPosts.sort(
+          (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+        );
+      });
+      
 
+      // Reset inputs
       setTitle("");
       setContent("");
       alert("Journal entry saved successfully!");
@@ -69,7 +111,6 @@ export default function Journaling() {
       alert("Failed to save the journal entry. Try again later.");
     }
   };
-  
 
   return (
     <div className="flex h-screen w-screen">
@@ -105,8 +146,8 @@ export default function Journaling() {
               className="rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow border border-gray-300"
             >
               <h3 className="font-bold text-lg">{post.title}</h3>
-              <p className="text-sm text-gray-500">{post.createdAt.toString()}</p>
-              <p className="text-sm mt-2">{post.content.slice(0, 100)}...</p>
+              <p className="text-sm text-gray-500">{new Date(post.createdAt).toLocaleString()}</p>
+              <p className="text-sm mt-2">{post.content}</p>
             </div>
           ))}
         </div>
