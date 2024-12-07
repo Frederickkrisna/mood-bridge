@@ -18,6 +18,7 @@ RUN apt-get update && apt-get install -y \
     libopenblas-dev \
     libpng-dev \
     python3-dev \
+    && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies
