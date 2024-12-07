@@ -53,3 +53,11 @@ export interface ChartDataInterface {
 export interface PredictionInterface {
   prediction: string;
 }
+
+export interface JournalInterface {
+  id: string;
+  userId: string;
+  title: string;
+  content: string;
+  createdAt: Date;
+}
