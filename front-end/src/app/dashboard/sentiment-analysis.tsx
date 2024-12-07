@@ -11,7 +11,7 @@ import axios from "axios";
 import Positive from "@/assets/Positive.png";
 import Negative from "@/assets/Negative.png";
 import Neutral from "@/assets/Neutral.png";
-
+import { v4 as uuidv4 } from "uuid";
 import {
   Card,
   CardContent,
@@ -26,14 +26,14 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { PredictionInterface } from "@/interfaces/interface";
-import { doc, updateDoc, Timestamp } from "firebase/firestore";
+import { MoodInterface, PredictionInterface } from "@/interfaces/interface";
+import { doc, updateDoc, Timestamp, setDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { AuthContext } from "@/context/AuthContext";
 
 export default function SentimentAnalysis() {
   const navigate = useNavigate();
-  const { userData } = useContext(AuthContext);
+  const { userData, setUserData } = useContext(AuthContext);
   const [input, setInput] = useState("");
   const [salr, setSalr] = useState<PredictionInterface>({
     prediction: "",
@@ -82,6 +82,15 @@ export default function SentimentAnalysis() {
     },
   } satisfies ChartConfig;
 
+  const handleReRender = () => {
+    console.log("Resetting state...");
+    setSalr({ prediction: "" });
+    setInput("");
+    setAnimateOut(false);
+    setShowChart(false);
+    setDisplay(true);
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInput(e.target.value);
   };
@@ -111,6 +120,10 @@ export default function SentimentAnalysis() {
         password: userData.password,
         moods: [...userData.moods, newMood],
         userId: userData.userId,
+      });
+      setUserData({
+        ...userData,
+        moods: [...userData.moods, newMood],
       });
     } catch (error) {
       console.log("Error: ", error);
@@ -193,6 +206,27 @@ export default function SentimentAnalysis() {
         );
       default:
         return <h2 className="flex justify-center items-center">Quotes</h2>;
+    }
+  };
+
+  const handlePost = async () => {
+    try {
+      const postId = uuidv4();
+      const docRef = await setDoc(doc(db, "MsPost", postId), {
+        content: input,
+        createdAt: Timestamp.fromDate(new Date()),
+        first_name: userData.first_name,
+        last_name: userData.last_name,
+        mood:
+          salr.prediction.charAt(0).toUpperCase() + salr.prediction.slice(1),
+        userId: userData.email,
+      });
+      console.log("Document written: ", docRef);
+      alert("Post created successfully");
+      handleReRender();
+    } catch (e) {
+      console.error("Error adding document: ", e);
+      alert("Error creating post");
     }
   };
 
@@ -310,15 +344,14 @@ export default function SentimentAnalysis() {
               <div className="flex flex-row gap-5 justify-center p-5">
                 <Button
                   className="px-20 py-2 bg-red-500 text-white rounded-lg"
-                  onClick={() => {
-                    setShowChart(false);
-                    setDisplay(true);
-                    setAnimateOut(false);
-                  }}
+                  onClick={handleReRender}
                 >
                   Cancel
                 </Button>
-                <Button className="px-20 py-2 bg-blue-500 text-white rounded-lg">
+                <Button
+                  className="px-20 py-2 bg-blue-500 text-white rounded-lg"
+                  onClick={handlePost}
+                >
                   Post
                 </Button>
               </div>
