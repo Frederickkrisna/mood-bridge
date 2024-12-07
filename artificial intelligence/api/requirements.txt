@@ -1,0 +1,8 @@
+flask
+nltk
+numpy
+pickle5
+scikit-learn
+spacy
+tensorflow
+tensorflowjs
