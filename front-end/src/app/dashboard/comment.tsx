@@ -1,4 +1,3 @@
-import RightSidebar from "@/components/right-sidebar";
 import Layout from "../layout";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
