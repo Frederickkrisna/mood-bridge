@@ -1,25 +1,70 @@
 import { IconSearch } from "@tabler/icons-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTheme } from "./theme-provider";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { PostInterface } from "@/interfaces/interface";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 
-export default function RightSidebar() {
+interface RightSideBarInterface {
+  readonly filterPosts: (filter: string) => void;
+}
+
+const RightSidebar: React.FC<RightSideBarInterface> = ({ filterPosts }) => {
   const { theme } = useTheme();
+  const [posts, setPosts] = useState<PostInterface[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      console.log(searchQuery);
+      // Search for posts
+      filterPosts(
+        searchQuery.charAt(0).toUpperCase() + searchQuery.slice(1).toLowerCase()
+      );
+
+      // Clear search query
+      setSearchQuery("");
     }
   };
 
-  const trendingTopics = [
-    { title: "Depression", post: 100 },
-    { title: "Anxiety", post: 90 },
-    { title: "Stress", post: 80 },
-    { title: "Mental Health", post: 77 },
-    { title: "Therapy", post: 75 },
-    { title: "Counselling", post: 60 },
-  ];
+  const handleFilter = (filter: string) => {
+    filterPosts(filter);
+  };
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const MsPost = collection(db, "MsPost");
+        const snapshot = await getDocs(MsPost);
+        const posts = snapshot.docs.map((doc) => {
+          const data = doc.data();
+          const createdAt = data.createdAt?.toDate
+            ? data.createdAt.toDate()
+            : new Date();
+          return {
+            id: doc.id,
+            ...data,
+            createdAt: createdAt.toLocaleString(),
+          };
+        });
+        setPosts(posts as PostInterface[]);
+      } catch (e) {
+        console.log("Error fetching post: ", e);
+        return;
+      }
+    };
+    fetchPosts();
+  }, []);
+
+  const getTrendingTopics = (posts: PostInterface[]) => {
+    const topics: { [key: string]: number } = {};
+    for (const post of posts) {
+      topics[post.mental_state] = (topics[post.mental_state] || 0) + 1;
+    }
+    const sortedTopics = Object.entries(topics).sort((a, b) => b[1] - a[1]);
+    return sortedTopics;
+  };
+
+  const trendingTopics = getTrendingTopics(posts);
 
   return (
     <nav className=" min-h-screen pt-10 top-0 right-0 fixed min-w-[58vh] flex flex-col items-center space-y-4">
@@ -45,12 +90,15 @@ export default function RightSidebar() {
         </CardHeader>
         <CardContent>
           <div className="flex flex-col">
-            {trendingTopics.map((topic, index) => (
-              <div key={index}>
-                <button className="flex justify-between p-2 w-full hover:dark:bg-gray-600 hover:bg-slate-50 rounded-lg">
-                  <p className="text-lg font-semibold">{topic.title}</p>
+            {trendingTopics.map(([topic, count]) => (
+              <div key={topic}>
+                <button
+                  onClick={() => handleFilter(topic)}
+                  className="flex justify-between p-2 w-full hover:dark:bg-gray-600 hover:bg-slate-50 rounded-lg"
+                >
+                  <p className="text-lg font-semibold">{topic}</p>
                   <p className="text-xs font-extralight text-slate-500 pt-1">
-                    {topic.post} posts
+                    {count} posts
                   </p>
                 </button>
               </div>
@@ -60,4 +108,6 @@ export default function RightSidebar() {
       </Card>
     </nav>
   );
-}
+};
+
+export default RightSidebar;

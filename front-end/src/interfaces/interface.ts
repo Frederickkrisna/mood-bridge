@@ -29,6 +29,7 @@ export interface PostInterface {
   createdAt: string;
   first_name: string;
   last_name: string;
+  mental_state: string;
 }
 
 export interface CommentInterface {

@@ -29,6 +29,7 @@ export default function SentimentAnalysis() {
   const navigate = useNavigate();
   const { userData, setUserData } = useContext(AuthContext);
   const [input, setInput] = useState("");
+  const [mentalState, setMentalState] = useState("");
   const [salr, setSalr] = useState<PredictionInterface>({
     prediction: "",
   });
@@ -119,6 +120,18 @@ export default function SentimentAnalysis() {
     }
   };
 
+  const handleMentalState = (data: MicInterface[]) => {
+    let initialData = data[0].desktop;
+    for (const item of data) {
+      if (item.desktop > initialData) {
+        initialData = item.desktop;
+        setMentalState(item.illness);
+      } else {
+        setMentalState(data[0].illness);
+      }
+    }
+  };
+
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!input) {
@@ -147,9 +160,9 @@ export default function SentimentAnalysis() {
           };
         }
       );
-      await updateUser(data.prediction);
       setChartData(updatedChartData);
-      console.log(Math.max(...micData.prediction));
+      handleMentalState(updatedChartData);
+      await updateUser(data.prediction);
       setAnimateOut(false);
       setTimeout(() => {
         setAnimateOut(true);
@@ -228,6 +241,7 @@ export default function SentimentAnalysis() {
         mood:
           salr.prediction.charAt(0).toUpperCase() + salr.prediction.slice(1),
         userId: userData.email,
+        mental_state: mentalState,
       });
       console.log("Document written: ", docRef);
       alert("Post created successfully");
