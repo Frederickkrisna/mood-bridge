@@ -121,15 +121,13 @@ export default function SentimentAnalysis() {
   };
 
   const handleMentalState = (data: MicInterface[]) => {
-    let initialData = data[0].desktop;
-    for (const item of data) {
-      if (item.desktop > initialData) {
-        initialData = item.desktop;
-        setMentalState(item.illness);
-      } else {
-        setMentalState(data[0].illness);
+    const mentalState = data.reduce((acc, curr) => {
+      if (curr.desktop > 0.5) {
+        acc = curr.illness;
       }
-    }
+      return acc;
+    }, "");
+    setMentalState(mentalState);
   };
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
