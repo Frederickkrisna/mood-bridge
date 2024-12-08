@@ -12,7 +12,7 @@ import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import SentimentAnalysis from "@/assets/sentiment_analysis.png";
 import MoodTracker from "@/assets/mood_tracker.jpg";
-import Journaling from "@/assets/journaling.gif";
+import Journaling from "@/assets/journaling.jpeg";
 import AnonymousChat from "@/assets/texting.jpg";
 import CallCenter from "@/assets/call_center.jpg";
 
