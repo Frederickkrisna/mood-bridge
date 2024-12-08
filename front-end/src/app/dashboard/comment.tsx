@@ -14,6 +14,7 @@ import {
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import ForumCard from "@/components/forum-card";
+import InputComment from "@/components/input-comment";
 
 export default function Comment() {
   const { id } = useParams<string>();
@@ -28,24 +29,24 @@ export default function Comment() {
     last_name: "",
   });
 
-  useEffect(() => {
-    const fetchComments = async (postId: string) => {
-      try {
-        const MsComment = collection(db, "MsComment");
-        const q = query(MsComment, where("postId", "==", postId));
-        const snapshot = await getDocs(q);
-        const comments = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-          createdAt: doc.data().createdAt.toDate().toLocaleString(),
-        }));
-        setComments(comments as CommentInterface[]);
-      } catch (e) {
-        console.log(e);
-        return;
-      }
-    };
+  const fetchComments = async (postId: string) => {
+    try {
+      const MsComment = collection(db, "MsComment");
+      const q = query(MsComment, where("postId", "==", postId));
+      const snapshot = await getDocs(q);
+      const comments = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+        createdAt: doc.data().createdAt.toDate().toLocaleString(),
+      }));
+      setComments(comments as CommentInterface[]);
+    } catch (e) {
+      console.log(e);
+      return;
+    }
+  };
 
+  useEffect(() => {
     const getPost = async (postId: string) => {
       try {
         const docRef = doc(db, "MsPost", postId);
@@ -78,12 +79,22 @@ export default function Comment() {
     }
   }, [id]);
 
+  const refreshComments = async () => {
+    if (id) {
+      fetchComments(id);
+    }
+  };
+
   return (
     <Layout>
       <div className="flex flex-row min-h-screen">
         <div className="flex-1 flex flex-col w-[50vw] overflow-x-hidden px-4 ml-[45vh]">
           {post && <ForumCard {...post} />}
-          <div className="flex flex-col mt-4">
+          <InputComment
+            postId={id as string}
+            refreshComments={refreshComments}
+          />
+          <div className="flex flex-col">
             {comments.map((comment) => (
               <CommentCard key={comment.id} {...comment} />
             ))}
