@@ -36,6 +36,13 @@
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+    --color-anxiety: #ffc0cb;
+    --color-bipolar: #ffd700;
+    --color-depression: #0000ff;
+    --color-normal: #008000;
+    --color-schizophrenia: #800080;
+    --color-stress: #ffa500;
+    --color-suicidal: #ff0000;
   }
   .dark {
     --background: 240 10% 3.9%;

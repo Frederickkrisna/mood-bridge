@@ -2,7 +2,7 @@ import { PlaceholdersAndVanishInput } from "@/components/ui/placeholders-and-van
 import { motion } from "framer-motion";
 import { useContext, useState } from "react";
 import { Salad, TrendingUp } from "lucide-react";
-import { Bar, BarChart, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import { IconArrowBack } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -26,7 +26,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { PredictionInterface } from "@/interfaces/interface";
+import { MicInterface, PredictionInterface } from "@/interfaces/interface";
 import { doc, updateDoc, Timestamp, setDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { AuthContext } from "@/context/AuthContext";
@@ -49,36 +49,11 @@ export default function SentimentAnalysis() {
     "What thoughts are running through your mind right now?",
     "Is there anything that's been bothering you lately?",
   ];
-  const chartData = [
-    { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
-    { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
-    { browser: "firefox", visitors: 187, fill: "var(--color-firefox)" },
-    { browser: "edge", visitors: 173, fill: "var(--color-edge)" },
-    { browser: "other", visitors: 90, fill: "var(--color-other)" },
-  ];
+  const [chartData, setChartData] = useState<MicInterface[]>([]);
   const chartConfig = {
-    visitors: {
-      label: "Visitors",
-    },
-    chrome: {
-      label: "Chrome",
-      color: "hsl(var(--chart-1))",
-    },
-    safari: {
-      label: "Safari",
-      color: "hsl(var(--chart-2))",
-    },
-    firefox: {
-      label: "Firefox",
-      color: "hsl(var(--chart-3))",
-    },
-    edge: {
-      label: "Edge",
-      color: "hsl(var(--chart-4))",
-    },
-    other: {
-      label: "Other",
-      color: "hsl(var(--chart-5))",
+    desktop: {
+      label: "mental illness",
+      color: "#7C4CE4",
     },
   } satisfies ChartConfig;
 
@@ -99,6 +74,21 @@ export default function SentimentAnalysis() {
     try {
       const response = await axios.post(
         "https://web-production-bd5e.up.railway.app/salr-predict",
+        {
+          input: text,
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.log("Error: ", error);
+      throw error;
+    }
+  };
+
+  const mic_predict = async (text: string) => {
+    try {
+      const response = await axios.post(
+        "https://mic-api-production.up.railway.app/mic-predict",
         {
           input: text,
         }
@@ -144,7 +134,27 @@ export default function SentimentAnalysis() {
     try {
       const data = await salr_predict(input);
       setSalr(data);
+
+      const micData = await mic_predict(input);
+      const updatedChartData = micData.prediction.map(
+        (desktop: number, index: number) => {
+          const illnessLabels = [
+            "Anxiety",
+            "Bipolar",
+            "Depression",
+            "Normal",
+            "Schizophrenia",
+            "Stress",
+            "Suicidal",
+          ];
+          return {
+            illness: illnessLabels[index],
+            desktop: desktop,
+          };
+        }
+      );
       await updateUser(data.prediction);
+      setChartData(updatedChartData);
       setAnimateOut(false);
       setTimeout(() => {
         setAnimateOut(true);
@@ -163,7 +173,7 @@ export default function SentimentAnalysis() {
           <img
             src={Positive}
             alt="positive"
-            className="max-w-44 p-2 object-fit"
+            className="w-auto h-[30vh] p-5 object-fit"
           />
         );
       case "negative":
@@ -171,7 +181,7 @@ export default function SentimentAnalysis() {
           <img
             src={Negative}
             alt="negative"
-            className="max-w-44 p-2 object-fit"
+            className="w-auto p-5 h-[30vh] object-fit"
           />
         );
       case "neutral":
@@ -179,7 +189,7 @@ export default function SentimentAnalysis() {
           <img
             src={Neutral}
             alt="neutral"
-            className="max-w-44 p-2 object-fit"
+            className="w-auto p-5 h-[30vh] object-fit"
           />
         );
       default:
@@ -280,66 +290,60 @@ export default function SentimentAnalysis() {
               {/* Chart and Emoji Cards */}
               <div className="flex flex-row items-center justify-center">
                 {/* Chart Card */}
-                <Card className="mx-5 min-h-80 max-h-80">
+                <Card className="mx-5 min-h-[80px] max-h-[75vh]">
                   <CardHeader>
                     <CardTitle>Bar Chart - Mixed</CardTitle>
                     <CardDescription>Mental Illness</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <ChartContainer config={chartConfig}>
-                      <BarChart
-                        accessibilityLayer
-                        data={chartData}
-                        layout="vertical"
-                        margin={{ left: 0 }}
-                      >
-                        <YAxis
-                          dataKey="browser"
-                          type="category"
+                    <ChartContainer config={chartConfig} className=" w-[75vh]">
+                      <BarChart accessibilityLayer data={chartData}>
+                        <CartesianGrid vertical={false} />
+                        <XAxis
+                          dataKey="illness"
                           tickLine={false}
                           tickMargin={10}
                           axisLine={false}
-                          tickFormatter={(value) =>
-                            chartConfig[value as keyof typeof chartConfig]
-                              ?.label
-                          }
+                          interval={0}
+                          tickFormatter={(value) => value}
+                          tick={(props) => {
+                            const { x, y, payload } = props;
+                            return (
+                              <text
+                                x={x}
+                                y={y + 15}
+                                textAnchor="middle"
+                                style={{ fontSize: "12px", fill: "#666" }}
+                              >
+                                {payload.value}
+                              </text>
+                            );
+                          }}
                         />
-                        <XAxis dataKey="visitors" type="number" hide />
-                        <ChartTooltip
-                          cursor={false}
-                          content={<ChartTooltipContent hideLabel />}
+                        <Bar
+                          dataKey="desktop"
+                          fill="var(--color-desktop)"
+                          radius={4}
                         />
-                        <Bar dataKey="visitors" layout="vertical" radius={5} />
                       </BarChart>
                     </ChartContainer>
                   </CardContent>
-                  <CardFooter className="flex-col items-start gap-2 text-sm">
-                    <div className="flex gap-2 font-medium leading-none">
-                      Trending up by 5.2% this month{" "}
-                      <TrendingUp className="h-4 w-4" />
-                    </div>
-                    <div className="leading-none text-muted-foreground">
-                      Showing total visitors for the last 6 months
-                    </div>
-                  </CardFooter>
                 </Card>
 
                 {/* Emoji Card */}
-                <Card className="mx-5">
+                <Card className="mx-5 h-full">
                   <CardHeader>
                     <CardTitle className="w-full flex items-center justify-center text-2xl">
                       {salr.prediction.charAt(0).toUpperCase() +
                         salr.prediction.slice(1)}
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="flex justify-center p-[-6]">
+                  <CardContent className="flex justify-center p-[-6] py-[1.5rem]">
                     <Emoji />
                   </CardContent>
-                  <CardFooter>
-                    <div className="flex justify-center items-center p-5 w-96">
-                      <Quotes />
-                    </div>
-                  </CardFooter>
+                  <div className="flex justify-center items-center w-96 p-[-6]">
+                    <Quotes />
+                  </div>
                 </Card>
               </div>
 
