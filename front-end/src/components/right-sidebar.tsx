@@ -16,7 +16,13 @@ const RightSidebar: React.FC<RightSideBarInterface> = ({ filterPosts }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      console.log(searchQuery);
+      // Search for posts
+      filterPosts(
+        searchQuery.charAt(0).toUpperCase() + searchQuery.slice(1).toLowerCase()
+      );
+
+      // Clear search query
+      setSearchQuery("");
     }
   };
 

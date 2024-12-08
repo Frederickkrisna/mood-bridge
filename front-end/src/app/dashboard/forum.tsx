@@ -44,6 +44,10 @@ export default function Forum() {
         (post) => post.mental_state === filter
       );
       setPosts(filteredPosts);
+      if (filteredPosts.length === 0) {
+        alert("No posts found");
+        setPosts(originalPosts);
+      }
     }
   }, [filter, originalPosts]);
 
