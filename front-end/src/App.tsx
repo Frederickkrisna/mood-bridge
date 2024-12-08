@@ -13,6 +13,7 @@ import Forum from "./app/dashboard/forum";
 import History from "./app/dashboard/history";
 import Aboutus from "./app/dashboard/aboutus";
 import Account from "./app/dashboard/account";
+import Comment from "./app/dashboard/comment";
 
 function App() {
   return (
@@ -24,8 +25,9 @@ function App() {
           <Route path="/auth/register" element={<Register />} />
           <Route path="/dashboard/home" element={<Home />} />
           <Route path="/dashboard/forum" element={<Forum />} />
+          <Route path="/dashboard/comment/:id" element={<Comment />} />
           <Route path="/dashboard/history" element={<History />} />
-          <Route path="/dashboard/account" element={<Account/>} />
+          <Route path="/dashboard/account" element={<Account />} />
           <Route path="/dashboard/about-us" element={<Aboutus />} />
           <Route
             path="/dashboard/sentiment-analysis"

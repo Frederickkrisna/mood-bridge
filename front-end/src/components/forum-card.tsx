@@ -1,16 +1,13 @@
-import { ChevronDown, Salad } from "lucide-react";
+import { MessagesSquare, Salad } from "lucide-react";
 import { Card, CardContent, CardFooter, CardHeader } from "./ui/card";
-import React, { useEffect, useState } from "react";
-import { CommentInterface, PostInterface } from "@/interfaces/interface";
+import React from "react";
+import { PostInterface } from "@/interfaces/interface";
 import Positive from "@/assets/Positive.png";
 import Negative from "@/assets/Negative.png";
 import Neutral from "@/assets/Neutral.png";
-import { collection, getDocs, query, where } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { Link } from "react-router-dom";
 
 const ForumCard: React.FC<PostInterface> = (props) => {
-  const [comments, setComments] = useState<CommentInterface[]>([]);
-
   const Emoji = () => {
     switch (props.mood) {
       case "Positive":
@@ -30,25 +27,6 @@ const ForumCard: React.FC<PostInterface> = (props) => {
     }
   };
 
-  useEffect(() => {
-    const fetchComments = async (postId: string) => {
-      try {
-        const MsComment = collection(db, "MsComment");
-        const q = query(MsComment, where("postId", "==", postId));
-        const snapshot = await getDocs(q);
-        const comments = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setComments(comments as CommentInterface[]);
-      } catch (e) {
-        console.log(e);
-        return;
-      }
-    };
-    fetchComments(props.id);
-  }, [props.id]);
-
   return (
     <Card className="border rounded-lg">
       <CardHeader className="flex flex-row justify-between">
@@ -64,12 +42,17 @@ const ForumCard: React.FC<PostInterface> = (props) => {
         <p>{props.content}</p>
       </CardContent>
       <CardFooter>
-        <div className="flex gap-2 font-medium leading-none">
-          {comments.length} Comments
-        </div>
-        <button>
-          <ChevronDown className="ml-4" />
-        </button>
+        <Link
+          to={{
+            pathname: `/dashboard/comment/${props.id}`,
+          }}
+          className="flex flex-row gap-4 hover:dark:bg-slate-900 p-1 rounded-lg items-center justify-center"
+        >
+          <MessagesSquare />
+          <div className="flex gap-2 font-medium leading-none">
+            View Comments
+          </div>
+        </Link>
       </CardFooter>
     </Card>
   );
