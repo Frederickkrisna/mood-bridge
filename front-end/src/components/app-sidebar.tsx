@@ -20,7 +20,6 @@ import {
   ChevronUp,
   History,
   Home,
-  Inbox,
   InfoIcon,
   MessageSquare,
   User2,
