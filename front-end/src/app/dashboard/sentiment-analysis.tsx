@@ -97,9 +97,12 @@ export default function SentimentAnalysis() {
 
   const salr_predict = async (text: string) => {
     try {
-      const response = await axios.post("http://localhost:5000/salr-predict", {
-        input: text,
-      });
+      const response = await axios.post(
+        "https://web-production-bd5e.up.railway.app/salr-predict",
+        {
+          input: text,
+        }
+      );
       return response.data;
     } catch (error) {
       console.log("Error: ", error);
