@@ -62,3 +62,9 @@ export interface JournalInterface {
   content: string;
   createdAt: Date;
 }
+
+export interface MicInterface {
+  illness: string;
+  desktop: number;
+  fill: string;
+}
