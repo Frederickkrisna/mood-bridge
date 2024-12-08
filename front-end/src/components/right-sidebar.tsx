@@ -1,21 +1,45 @@
 import { IconSearch } from "@tabler/icons-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTheme } from "./theme-provider";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { PostInterface } from "@/interfaces/interface";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 
-interface RightSidebarProps {
-  posts: PostInterface[];
-}
-
-const RightSidebar: React.FC<RightSidebarProps> = ({ posts }) => {
+const RightSidebar = () => {
   const { theme } = useTheme();
+  const [posts, setPosts] = useState<PostInterface[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       console.log(searchQuery);
     }
   };
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const MsPost = collection(db, "MsPost");
+        const snapshot = await getDocs(MsPost);
+        const posts = snapshot.docs.map((doc) => {
+          const data = doc.data();
+          const createdAt = data.createdAt?.toDate
+            ? data.createdAt.toDate()
+            : new Date();
+          return {
+            id: doc.id,
+            ...data,
+            createdAt: createdAt.toLocaleString(),
+          };
+        });
+        setPosts(posts as PostInterface[]);
+      } catch (e) {
+        console.log("Error fetching post: ", e);
+        return;
+      }
+    };
+    fetchPosts();
+  }, []);
 
   const getTrendingTopics = (posts: PostInterface[]) => {
     const topics: { [key: string]: number } = {};

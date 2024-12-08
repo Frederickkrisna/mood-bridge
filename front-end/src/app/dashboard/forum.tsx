@@ -45,7 +45,7 @@ export default function Forum() {
         </div>
 
         <div className="flex-shrink-0 w-[25rem]">
-          <RightSidebar posts={posts} />
+          <RightSidebar />
         </div>
       </div>
     </Layout>
