@@ -365,7 +365,7 @@ export default function SentimentAnalysis() {
                   Cancel
                 </Button>
                 <Button
-                  className="px-20 py-2 bg-blue-500 text-white rounded-lg"
+                  className="px-20 py-2 bg-purple-500 text-white rounded-lg"
                   onClick={handlePost}
                 >
                   Post

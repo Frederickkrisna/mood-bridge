@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { GenerativeModel, GoogleGenerativeAI } from "@google/generative-ai";
 import { BeatLoader } from "react-spinners";
 import { useNavigate } from "react-router-dom";
+import Markdown from "../../components/Markdown";
 import { information } from "@/assets/InformationData";
 import { auth as firebaseAuth, db } from "@/lib/firebase";
 import { doc, getDoc } from "firebase/firestore"; 
@@ -258,7 +259,7 @@ export default function GeminiChatBot() {
                   <div className="flex justify-start mt-2">
                     {content.bot ? (
                       <div className="bg-gray-200 text-black p-4 rounded-xl max-w-[65%] shadow-md">
-                        {content.bot}
+                        <Markdown key={index} markdown={content.bot} />
                       </div>
                     ) : (
                       <div className="my-5 text-black bg-gray-200 p-5 rounded-xl max-w-[65%] shadow-md">
@@ -298,14 +299,22 @@ export default function GeminiChatBot() {
                 }}
                 ref={textareaRef}
               />
-              <button
+              {/* <button
                 onClick={getResponse}
                 disabled={loading}
-                className="rounded-xl border border-purple-500 h-[4rem] px-5"
+                className="rounded-xl border text-purple-500 border-purple-500 h-[4rem] px-5"
               >
                 Send
-              </button>
-              <button
+              </button> */}
+              <button onClick={getResponse}
+                disabled={loading}
+                className="mr-2 relative inline-flex h-12 w-20 overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-4 focus:ring-offset-slate-50">
+                <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" />
+                <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full text-white bg-slate-950 px-3 py-1 text-sm font-medium backdrop-blur-3xl">
+                    Send
+                </span>
+            </button>
+              {/* <button
                 onClick={() => {
                   setTimeoutEnabled(false);
                   alert("Thank you for chatting with me!");
@@ -315,7 +324,17 @@ export default function GeminiChatBot() {
                 className="ml-5 rounded-xl text-red-500 bg-background border-[2px] border-red-500 h-[4rem] px-5"
               >
                 End Chat
-              </button>
+              </button> */}
+              <button 
+              onClick={() => {
+                setTimeoutEnabled(false);
+                alert("Thank you for chatting with me!");
+                navigate("/dashboard/home");
+              }}
+              disabled={loading}
+              className="shadow-[inset_0_0_0_2px_#616467] px-5 py-3 rounded-full tracking-widest bg-transparent hover:bg-[#616467] hover:text-white dark:text-neutral-200 transition duration-200">
+                End Chat
+            </button>
             </div>
           </div>
         </div>
