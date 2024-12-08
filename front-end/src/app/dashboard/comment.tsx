@@ -102,7 +102,7 @@ export default function Comment() {
           </div>
         </div>
         <div className="flex-shrink-0 w-[25rem]">
-          <RightSidebar />
+          <RightSidebar posts={[post]} />
         </div>
       </div>
     </Layout>
