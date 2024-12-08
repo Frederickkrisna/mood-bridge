@@ -27,6 +27,7 @@ export default function Comment() {
     userId: "",
     first_name: "",
     last_name: "",
+    mental_state: "",
   });
 
   const fetchComments = async (postId: string) => {
