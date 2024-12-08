@@ -21,6 +21,7 @@ import {
   History,
   Home,
   Inbox,
+  InfoIcon,
   MessageSquare,
   User2,
 } from "lucide-react";
@@ -46,9 +47,9 @@ const items = [
     url: "/dashboard/forum",
   },
   {
-    title: "Inbox",
-    icon: Inbox,
-    url: "/dashboard/inbox",
+    title: "About Us",
+    icon: InfoIcon,
+    url: "/dashboard/about-us",
   },
 ];
 
