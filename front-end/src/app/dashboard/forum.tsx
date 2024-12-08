@@ -8,6 +8,9 @@ import { db } from "@/lib/firebase";
 
 export default function Forum() {
   const [posts, setPosts] = useState<PostInterface[]>([]);
+  const [originalPosts, setOriginalPosts] = useState<PostInterface[]>([]);
+  const [filter, setFilter] = useState<string>("");
+
   useEffect(() => {
     const fetchPosts = async () => {
       try {
@@ -25,13 +28,24 @@ export default function Forum() {
           };
         });
         setPosts(posts as PostInterface[]);
+        setOriginalPosts(posts as PostInterface[]);
       } catch (e) {
         console.log("Error fetching post: ", e);
-        return;
       }
     };
     fetchPosts();
   }, []);
+
+  useEffect(() => {
+    if (filter === "") {
+      setPosts(originalPosts);
+    } else {
+      const filteredPosts = originalPosts.filter(
+        (post) => post.mental_state === filter
+      );
+      setPosts(filteredPosts);
+    }
+  }, [filter, originalPosts]);
 
   return (
     <Layout>
@@ -45,7 +59,7 @@ export default function Forum() {
         </div>
 
         <div className="flex-shrink-0 w-[25rem]">
-          <RightSidebar />
+          <RightSidebar filterPosts={setFilter} />
         </div>
       </div>
     </Layout>

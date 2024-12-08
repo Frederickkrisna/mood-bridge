@@ -89,7 +89,7 @@ export default function Comment() {
   return (
     <Layout>
       <div className="flex flex-row min-h-screen">
-        <div className="flex-1 flex flex-col w-[50vw] overflow-x-hidden px-4 ml-[45vh]">
+        <div className="flex-1 flex flex-col w-[75vw] overflow-x-hidden px-4 ml-[45vh]">
           {post && <ForumCard {...post} />}
           <InputComment
             postId={id as string}
@@ -100,9 +100,6 @@ export default function Comment() {
               <CommentCard key={comment.id} {...comment} />
             ))}
           </div>
-        </div>
-        <div className="flex-shrink-0 w-[25rem]">
-          <RightSidebar />
         </div>
       </div>
     </Layout>

@@ -6,7 +6,11 @@ import { PostInterface } from "@/interfaces/interface";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 
-const RightSidebar = () => {
+interface RightSideBarInterface {
+  readonly filterPosts: (filter: string) => void;
+}
+
+const RightSidebar: React.FC<RightSideBarInterface> = ({ filterPosts }) => {
   const { theme } = useTheme();
   const [posts, setPosts] = useState<PostInterface[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -14,6 +18,10 @@ const RightSidebar = () => {
     if (e.key === "Enter") {
       console.log(searchQuery);
     }
+  };
+
+  const handleFilter = (filter: string) => {
+    filterPosts(filter);
   };
 
   useEffect(() => {
@@ -78,7 +86,10 @@ const RightSidebar = () => {
           <div className="flex flex-col">
             {trendingTopics.map(([topic, count]) => (
               <div key={topic}>
-                <button className="flex justify-between p-2 w-full hover:dark:bg-gray-600 hover:bg-slate-50 rounded-lg">
+                <button
+                  onClick={() => handleFilter(topic)}
+                  className="flex justify-between p-2 w-full hover:dark:bg-gray-600 hover:bg-slate-50 rounded-lg"
+                >
                   <p className="text-lg font-semibold">{topic}</p>
                   <p className="text-xs font-extralight text-slate-500 pt-1">
                     {count} posts
