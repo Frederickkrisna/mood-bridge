@@ -17,7 +17,7 @@ export default function Journaling() {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (!user) {
-        navigate("/login"); // Redirect to login if not authenticated
+        navigate("/auth/login");
       }
     });
 
