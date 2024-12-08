@@ -3,7 +3,6 @@ import { useState } from "react";
 
 export default function AnonymousChat() {
   const [category, setCategory] = useState("");
-  console.log(category);
   return (
     <>
       <div className="flex items-center justify-center h-screen dark:bg-slate-950 bg-slate-50">
