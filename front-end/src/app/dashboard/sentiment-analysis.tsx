@@ -149,6 +149,7 @@ export default function SentimentAnalysis() {
       );
       await updateUser(data.prediction);
       setChartData(updatedChartData);
+      console.log(Math.max(...micData.prediction));
       setAnimateOut(false);
       setTimeout(() => {
         setAnimateOut(true);
