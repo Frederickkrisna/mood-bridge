@@ -1,8 +1,0 @@
-flask
-flask-cors
-nltk
-numpy
-scikit-learn
-spacy
-tensorflow
-tensorflowjs
