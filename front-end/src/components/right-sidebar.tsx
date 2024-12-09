@@ -69,7 +69,7 @@ const RightSidebar: React.FC<RightSideBarInterface> = ({ filterPosts }) => {
   return (
     <nav className=" min-h-screen pt-10 top-0 right-0 fixed min-w-[58vh] flex flex-col items-center space-y-4">
       <div
-        className={`flex items-center border border-primary rounded-lg ml-10 mx-10 ${
+        className={`flex items-center border rounded-lg ml-10 mx-10 ${
           theme === "dark" ? "bg-white text-black" : "bg-slate-600 text-white"
         } text-sm w-[20rem]`}
       >
